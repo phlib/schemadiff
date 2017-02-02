@@ -1,0 +1,28 @@
+{
+    "name": "phlib/schemadiff",
+    "description": "Schema Diff: Show difference between MySQL databases",
+    "type": "library",
+    "license": "LGPL-3.0",
+    "homepage": "https://github.com/phlib/schemadiff",
+    "keywords": [
+        "mysql",
+        "schema",
+        "diff"
+    ],
+    "authors": [
+        {
+            "name": "James Dempster",
+            "email": "james.dempster@emailcenteruk.com"
+        }
+    ],
+    "require": {
+        "php": "^7",
+        "symfony/console": "^3.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Phlib\\SchemaDiff\\": "src"
+        }
+    },
+    "bin": ["schemadiff"]
+}
