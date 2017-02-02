@@ -178,7 +178,7 @@ DESC
             }
 
             $schema2 = $this->createSchemaInfo($pdo2, $database, $output);
-            $differences = $differences || $schemaDiff->diff($schema1, $schema2);
+            $differences = $schemaDiff->diff($schema1, $schema2) || $differences;
         }
 
         return $differences ? 1 : 0;
