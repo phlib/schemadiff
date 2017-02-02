@@ -65,7 +65,8 @@ SQL;
         $sql = <<<SQL
 SELECT
     `INDEX_NAME`,
-    `COLUMN_NAME`
+    `COLUMN_NAME`,
+    `NON_UNIQUE`
 FROM `information_schema`.`STATISTICS`
 WHERE
     table_schema = ?
@@ -92,7 +93,8 @@ SQL;
             $indexes = [];
             foreach ($indexResult as $indexName => $indexInfo) {
                 $indexes[$indexName] = [
-                    'columns' => implode(',', array_column($indexInfo, 'COLUMN_NAME'))
+                    'columns' => implode(',', array_column($indexInfo, 'COLUMN_NAME')),
+                    'unique'  => $indexInfo[0]['NON_UNIQUE'] == 0 ? 'Yes' : 'No'
                 ];
             }
 
