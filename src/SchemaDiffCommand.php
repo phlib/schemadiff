@@ -259,7 +259,7 @@ DESC
     private function splitUnquoteTable(string $table): array
     {
         list($database, $table) = array_pad(explode('.', $table, 2), 2, null);
-        if (!$database) {
+        if (!$table) {
             $table = $database;
             $database = '*';
         }
