@@ -73,8 +73,8 @@ class SchemaDiff
                 $this->output->writeln(sprintf(
                     $msg,
                     $tableName,
-                    $schema1->getName(),
-                    $schema2->getName()
+                    $schema1->getName().'@1',
+                    $schema2->getName().'@2'
                 ));
 
                 continue;
@@ -84,8 +84,8 @@ class SchemaDiff
                 $this->output->writeln(sprintf(
                     $msg,
                     $tableName,
-                    $schema2->getName(),
-                    $schema1->getName()
+                    $schema2->getName().'@2',
+                    $schema1->getName().'@1'
                 ));
 
                 continue;
@@ -118,8 +118,8 @@ class SchemaDiff
                 $differences = true;
                 $this->output->writeln([
                     "<error>Table attribute mismatch</error> <table>{$tableName}</table> attribute <attribute>$attribute</attribute> differs:",
-                    "\t<schema>{$schema1->getName()}</schema>={$tableInfo1[$attribute]}",
-                    "\t<schema>{$schema2->getName()}</schema>={$tableInfo2[$attribute]}"
+                    "\t<schema>{$schema1->getName()}@1</schema>={$tableInfo1[$attribute]}",
+                    "\t<schema>{$schema2->getName()}@2</schema>={$tableInfo2[$attribute]}"
                 ]);
             }
         }
@@ -150,8 +150,8 @@ class SchemaDiff
                         $msg,
                         $tableName,
                         $columnName,
-                        $schema1->getName(),
-                        $schema2->getName()
+                        $schema1->getName().'@1',
+                        $schema2->getName().'@2'
                     )
                 );
 
@@ -165,8 +165,8 @@ class SchemaDiff
                         $msg,
                         $tableName,
                         $columnName,
-                        $schema2->getName(),
-                        $schema1->getName()
+                        $schema2->getName().'@2',
+                        $schema1->getName().'@1'
                     )
                 );
 
@@ -198,8 +198,8 @@ class SchemaDiff
                 $differences = true;
                 $this->output->writeln([
                     "<error>Column attribute mismatch</error> <table>{$tableName}</table>.<column>{$columnName}</column> attribute <attribute>$attribute</attribute> differs:",
-                    "\t<schema>{$schema1->getName()}</schema>={$columnInfo1[$attribute]}",
-                    "\t<schema>{$schema2->getName()}</schema>={$columnInfo2[$attribute]}"
+                    "\t<schema>{$schema1->getName()}@1</schema>={$columnInfo1[$attribute]}",
+                    "\t<schema>{$schema2->getName()}@2</schema>={$columnInfo2[$attribute]}"
                 ]);
             }
         }
@@ -229,8 +229,8 @@ class SchemaDiff
                     $msg,
                     $tableName,
                     $indexName,
-                    $schema1->getName(),
-                    $schema2->getName()
+                    $schema1->getName().'@1',
+                    $schema2->getName().'@2'
                 ));
 
                 continue;
@@ -242,8 +242,8 @@ class SchemaDiff
                     $msg,
                     $tableName,
                     $indexName,
-                    $schema2->getName(),
-                    $schema1->getName()
+                    $schema2->getName().'@2',
+                    $schema1->getName().'@1'
                 ));
 
                 continue;
@@ -274,8 +274,8 @@ class SchemaDiff
                 $differences = true;
                 $this->output->writeln([
                     "<error>Index attribute mismatch</error> <table>{$tableName}</table>.<index>{$indexName}</index> attribute <attribute>$attribute</attribute> differs:",
-                    "\t<schema>{$schema1->getName()}</schema>={$indexInfo1[$attribute]}",
-                    "\t<schema>{$schema2->getName()}</schema>={$indexInfo2[$attribute]}"
+                    "\t<schema>{$schema1->getName()}@1</schema>={$indexInfo1[$attribute]}",
+                    "\t<schema>{$schema2->getName()}@2</schema>={$indexInfo2[$attribute]}"
                 ]);
             }
         }
