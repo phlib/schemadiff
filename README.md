@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/phlib/schemadiff.svg)](https://packagist.org/packages/phlib/schemadiff)
 ![Licence](https://img.shields.io/github/license/phlib/schemadiff.svg?style=flat-square)
 
-MySQL Schema Diff
+MySQL Schema Diff, a Symfony Console tool for displaying differeance between two schemas. This can be useful by showing differences between production and development. It's then up to the developer to create some kind of migration scripts.
 
 ## Install
 
@@ -58,3 +58,13 @@ exit($different ? 1 : 0);
 
 ```
 
+## Example Ouput
+
+Output shows difference between the schemas.
+![Example 1](example-01.png)
+
+As the database names could be the same on different hosts, the DSN position is included.
+![Example 2](example-02.png)
+
+Testing different copies match a tempalte database.
+![Example 3](example-03.png)
