@@ -59,6 +59,9 @@ class SchemaDiff
     public function diff(SchemaInfo $schema1, SchemaInfo $schema2): bool
     {
         $differences = false;
+
+        $differences = $this->compareSchemaInfo($schema1, $schema2) || $differences;
+
         $tables = array_unique(
             array_merge(
                 $schema1->getTables(),
@@ -94,6 +97,33 @@ class SchemaDiff
             $differences = $this->compareTableInfo($schema1, $schema2, $tableName) || $differences;
             $differences = $this->compareColumns($schema1, $schema2, $tableName) || $differences;
             $differences = $this->compareIndexes($schema1, $schema2, $tableName) || $differences;
+        }
+
+        return $differences;
+    }
+
+    /**
+     * @param SchemaInfo $schema1
+     * @param SchemaInfo $schema2
+     * @return bool
+     */
+    private function compareSchemaInfo(SchemaInfo $schema1, SchemaInfo $schema2): bool
+    {
+        $differences = false;
+        $schemaInfo1 = $schema1->getInfo();
+        $schemaInfo2 = $schema2->getInfo();
+
+        $attributes = array_keys($schemaInfo1);
+
+        foreach ($attributes as $attribute) {
+            if ($schemaInfo1[$attribute] != $schemaInfo2[$attribute]) {
+                $differences = true;
+                $this->output->writeln([
+                    "<error>Schema attribute mismatch</error> attribute <attribute>$attribute</attribute> differs:",
+                    "\t<schema>{$schema1->getName()}@1</schema>={$schemaInfo1[$attribute]}",
+                    "\t<schema>{$schema2->getName()}@2</schema>={$schemaInfo2[$attribute]}"
+                ]);
+            }
         }
 
         return $differences;

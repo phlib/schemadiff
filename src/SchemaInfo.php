@@ -18,17 +18,24 @@ class SchemaInfo
     /**
      * @var array
      */
+    private $schemaData;
+
+    /**
+     * @var array
+     */
     private $tableData;
 
     /**
      * TableInfo constructor.
      *
      * @param string $name
+     * @param array $schemaData
      * @param array $tableData
      */
-    public function __construct(string $name, array $tableData)
+    public function __construct($name, array $schemaData, array $tableData)
     {
         $this->name = $name;
+        $this->schemaData = $schemaData;
         $this->tableData = $tableData;
     }
 
@@ -38,6 +45,14 @@ class SchemaInfo
     public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * @return array
+     */
+    public function getInfo(): array
+    {
+        return $this->schemaData;
     }
 
     /**

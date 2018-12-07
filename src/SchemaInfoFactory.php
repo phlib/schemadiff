@@ -18,10 +18,16 @@ class SchemaInfoFactory
      */
     public static function fromPdo(\PDO $connection, string $schemaName, callable $tableFilter = null): SchemaInfo
     {
-        $sql = 'SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?';
+        $sql = <<<SQL
+SELECT
+    DEFAULT_CHARACTER_SET_NAME AS 'default character set',
+    DEFAULT_COLLATION_NAME AS 'default collation'
+FROM INFORMATION_SCHEMA.SCHEMATA
+WHERE SCHEMA_NAME = ?
+SQL;
         $schemaStmt = $connection->prepare($sql);
         $schemaStmt->execute([$schemaName]);
-        $schemaInfo = $schemaStmt->fetchAll(\PDO::FETCH_ASSOC);
+        $schemaInfo = $schemaStmt->fetch(\PDO::FETCH_ASSOC);
         if (!$schemaInfo) {
             throw new \InvalidArgumentException("Schema $schemaName doesn't exist");
         }
@@ -76,7 +82,7 @@ ORDER BY INDEX_NAME, SEQ_IN_INDEX
 SQL;
         $indexesStmt = $connection->prepare($sql);
 
-        $data = [];
+        $tableData = [];
         foreach ($tables as $tableInfo) {
             $tableName = $tableInfo['TABLE_NAME'];
 
@@ -98,7 +104,7 @@ SQL;
                 ];
             }
 
-            $data[$tableName] = [
+            $tableData[$tableName] = [
                 'TABLE_INFO' => $tableInfo,
                 'COLUMNS'    => $columns,
                 'INDEXES'    => $indexes
@@ -124,6 +130,6 @@ SQL;
 //            ]
 //        ];
 
-        return new SchemaInfo($schemaName, $data);
+        return new SchemaInfo($schemaName, $schemaInfo, $tableData);
     }
 }
