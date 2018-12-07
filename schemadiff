@@ -15,7 +15,7 @@ use Symfony\Component\Console\Application;
 
 $app = new Application();
 $app->setName('Schema Diff');
-$app->setVersion('1.0.1');
+$app->setVersion('1.1.0');
 $app->add(new \Phlib\SchemaDiff\SchemaDiffCommand());
 $app->setDefaultCommand('schemadiff', true);
 $app->run();
