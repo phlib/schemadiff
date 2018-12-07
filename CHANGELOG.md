@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Compare schema attributes: *default character set* and *default collation*
 ### Changed
 - Improved README and added screenshots
+- Added missing *license* wording to README 
 
 ## [1.0.1] - 2017-02-02
 ### Added
