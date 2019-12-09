@@ -11,8 +11,11 @@
     ],
     "authors": [
         {
-            "name": "James Dempster",
-            "email": "james.dempster@emailcenteruk.com"
+            "name": "James Dempster"
+        },
+        {
+            "name": "Phlib Team & Contributors",
+            "homepage": "https://github.com/phlib/console-process/contributors"
         }
     ],
     "require": {
