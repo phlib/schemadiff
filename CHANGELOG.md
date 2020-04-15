@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+- Allow use of Symfony/Console v4 and v5. This allows SchemaDiff to co-exist
+  with dependencies requiring these newer versions.
 
 ## [1.1.0] - 2018-12-07
 ### Added
