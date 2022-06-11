@@ -15,7 +15,7 @@
         },
         {
             "name": "Phlib Team & Contributors",
-            "homepage": "https://github.com/phlib/console-process/contributors"
+            "homepage": "https://github.com/phlib/schemadiff/contributors"
         }
     ],
     "require": {
