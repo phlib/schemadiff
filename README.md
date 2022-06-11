@@ -61,13 +61,13 @@ exit($different ? 1 : 0);
 ## Example Ouput
 
 Output shows difference between the schemas.
-![Example 1](example-01.png)
+![Example 1](examples/example-01.png)
 
 As the database names could be the same on different hosts, the DSN position is included.
-![Example 2](example-02.png)
+![Example 2](examples/example-02.png)
 
 Testing different copies match a tempalte database.
-![Example 3](example-03.png)
+![Example 3](examples/example-03.png)
 
 ## License
 
