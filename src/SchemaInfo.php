@@ -4,9 +4,7 @@ declare(strict_types=1);
 namespace Phlib\SchemaDiff;
 
 /**
- * Class SchemaInfo
- *
- * @package Application\Database
+ * @package phlib/schemadiff
  */
 class SchemaInfo
 {

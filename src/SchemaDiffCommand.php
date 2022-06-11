@@ -11,9 +11,7 @@ use Symfony\Component\Console\Output\Output;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class DiffCommand
- *
- * @package Phlib\SchemaDiff
+ * @package phlib/schemadiff
  */
 class SchemaDiffCommand extends Command
 {

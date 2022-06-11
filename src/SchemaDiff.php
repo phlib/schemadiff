@@ -7,9 +7,7 @@ use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class SchemaInfoDiff
- *
- * @package Application\Database
+ * @package phlib/schemadiff
  */
 class SchemaDiff
 {
