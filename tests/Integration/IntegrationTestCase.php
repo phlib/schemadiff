@@ -56,18 +56,39 @@ abstract class IntegrationTestCase extends TestCase
         return 'phlib_schemadiff_test_' . substr(sha1(uniqid()), 0, 10);
     }
 
-    final protected function createTestTable(string $schemaName, string $tableName)
-    {
+    final protected function createTestTable(
+        string $schemaName,
+        string $tableName,
+        bool $charCol = true,
+        bool $charIdx = false,
+        string $colCharset = null,
+        string $tableCharset = 'ascii'
+    ) {
         $schemaTableQuoted = '`' . $schemaName . "`.`{$tableName}`";
 
         $sql = <<<SQL
 CREATE TABLE {$schemaTableQuoted} (
   `test_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `char_col` varchar(255) DEFAULT NULL,
+SQL;
+
+        if ($charCol) {
+            $sql .= '  `char_col` varchar(255)';
+            if ($colCharset !== null) {
+                $sql .= 'CHARACTER SET ' . $colCharset;
+            }
+            $sql .= " DEFAULT NULL,\n";
+        }
+
+        $sql .= <<<SQL
   `update_ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`test_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=ascii
 SQL;
+
+        if ($charIdx) {
+            $sql .= ",\n  INDEX `idx_char` (`char_col`)\n";
+        }
+
+        $sql .= ") ENGINE=InnoDB DEFAULT CHARSET={$tableCharset}";
 
         $this->pdo->query($sql);
 
