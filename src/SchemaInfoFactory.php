@@ -109,25 +109,6 @@ SQL;
             ];
         }
 
-//        $sampleData = [
-//            'tableName' => [
-//                'TABLE_INFO' => [
-//                    'attribs' => 'values'
-//                ],
-//                'COLUMNS' => [
-//                    'columnName' => [
-//                        'attribs' => 'values'
-//                    ]
-//                ],
-//                'INDEXES' => [
-//                    'indexName' => [
-//                        'columns'    => 'id,etc',
-//                        'other_keys' => 'other_values'
-//                    ]
-//                ]
-//            ]
-//        ];
-
         return new SchemaInfo($schemaName, $schemaInfo, $tableData);
     }
 }
