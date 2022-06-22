@@ -1,8 +1,10 @@
 # phlib/schemadiff
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/phlib/schemadiff.svg)](https://packagist.org/packages/phlib/schemadiff)
-[![Total Downloads](https://img.shields.io/packagist/dt/phlib/schemadiff.svg)](https://packagist.org/packages/phlib/schemadiff)
-![Licence](https://img.shields.io/github/license/phlib/schemadiff.svg?style=flat-square)
+[![Code Checks](https://img.shields.io/github/workflow/status/phlib/schemadiff/CodeChecks?logo=github)](https://github.com/phlib/schemadiff/actions/workflows/code-checks.yml)
+[![Codecov](https://img.shields.io/codecov/c/github/phlib/schemadiff.svg?logo=codecov)](https://codecov.io/gh/phlib/schemadiff)
+[![Latest Stable Version](https://img.shields.io/packagist/v/phlib/schemadiff.svg?logo=packagist)](https://packagist.org/packages/phlib/schemadiff)
+[![Total Downloads](https://img.shields.io/packagist/dt/phlib/schemadiff.svg?logo=packagist)](https://packagist.org/packages/phlib/schemadiff)
+![Licence](https://img.shields.io/github/license/phlib/schemadiff.svg)
 
 MySQL Schema Diff, a Symfony Console tool for displaying differeance between two schemas. This can be useful by showing differences between production and development. It's then up to the developer to create some kind of migration scripts.
 

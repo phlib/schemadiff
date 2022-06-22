@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit
+    bootstrap="vendor/autoload.php"
+    beStrictAboutOutputDuringTests="true"
+    convertDeprecationsToExceptions="true"
+    colors="true"
+>
+    <php>
+        <env name="INTEGRATION_ENABLED" value="0" />
+        <env name="DB_HOST" value="127.0.0.1" />
+        <env name="DB_PORT" value="3306" />
+        <env name="DB_USERNAME" value="" />
+        <env name="DB_PASSWORD" value="" />
+        <env name="DB_DATABASE_1" value="test_1" />
+        <env name="DB_DATABASE_2" value="test_2" />
+    </php>
+    <testsuites>
+        <testsuite name="Phlib Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">src</directory>
+        </whitelist>
+    </filter>
+</phpunit>
