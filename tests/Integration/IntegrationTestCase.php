@@ -11,17 +11,11 @@ use PHPUnit\Framework\TestCase;
  */
 abstract class IntegrationTestCase extends TestCase
 {
-    /**
-     * @var \PDO
-     */
-    protected $pdo;
+    protected \PDO $pdo;
 
-    /**
-     * @var array
-     */
-    private $schemaTableQuoted = [];
+    private array $schemaTableQuoted = [];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if ((bool)getenv('INTEGRATION_ENABLED') !== true) {
             static::markTestSkipped();
@@ -42,7 +36,7 @@ abstract class IntegrationTestCase extends TestCase
         );
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         foreach ($this->schemaTableQuoted as $schemaTableQuoted) {
             $this->pdo->query("DROP TABLE {$schemaTableQuoted}");

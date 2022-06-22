@@ -14,14 +14,14 @@ use Symfony\Component\Console\Output\BufferedOutput;
  */
 class SchemaDiffTest extends IntegrationTestCase
 {
-    public function testSame()
+    public function testSame(): void
     {
         $tableName = $this->generateTableName();
 
         $this->createTestTable(getenv('DB_DATABASE_1'), $tableName);
         $this->createTestTable(getenv('DB_DATABASE_2'), $tableName);
 
-        $tableFilter = function ($testTable) use ($tableName) {
+        $tableFilter = function ($testTable) use ($tableName): bool {
             return $testTable === $tableName;
         };
 
@@ -49,13 +49,13 @@ class SchemaDiffTest extends IntegrationTestCase
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testMissingTable(int $first, int $second)
+    public function testMissingTable(int $first, int $second): void
     {
         $tableName = $this->generateTableName();
 
         $this->createTestTable(getenv('DB_DATABASE_' . $first), $tableName);
 
-        $tableFilter = function ($testTable) use ($tableName) {
+        $tableFilter = function ($testTable) use ($tableName): bool {
             return $testTable === $tableName;
         };
 
@@ -77,14 +77,14 @@ class SchemaDiffTest extends IntegrationTestCase
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testMissingColumn(int $first, int $second)
+    public function testMissingColumn(int $first, int $second): void
     {
         $tableName = $this->generateTableName();
 
         $this->createTestTable(getenv('DB_DATABASE_' . $first), $tableName, true);
         $this->createTestTable(getenv('DB_DATABASE_' . $second), $tableName, false);
 
-        $tableFilter = function ($testTable) use ($tableName) {
+        $tableFilter = function ($testTable) use ($tableName): bool {
             return $testTable === $tableName;
         };
 
@@ -100,20 +100,20 @@ class SchemaDiffTest extends IntegrationTestCase
         $expected = "Missing column {$tableName}.char_col missing on " .
             getenv('DB_DATABASE_' . $second) . "@{$second} exists on " . getenv('DB_DATABASE_' . $first) . "@{$first}";
         $actual = $outputBuffer->fetch();
-        static::assertContains($expected, $actual);
+        static::assertStringContainsString($expected, $actual);
     }
 
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testMissingIndex(int $first, int $second)
+    public function testMissingIndex(int $first, int $second): void
     {
         $tableName = $this->generateTableName();
 
         $this->createTestTable(getenv('DB_DATABASE_' . $first), $tableName, true, true);
         $this->createTestTable(getenv('DB_DATABASE_' . $second), $tableName, true, false);
 
-        $tableFilter = function ($testTable) use ($tableName) {
+        $tableFilter = function ($testTable) use ($tableName): bool {
             return $testTable === $tableName;
         };
 
@@ -135,14 +135,14 @@ class SchemaDiffTest extends IntegrationTestCase
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testDiffColumnCharset(int $first, int $second)
+    public function testDiffColumnCharset(int $first, int $second): void
     {
         $tableName = $this->generateTableName();
 
         $this->createTestTable(getenv('DB_DATABASE_' . $first), $tableName, true, false, null);
         $this->createTestTable(getenv('DB_DATABASE_' . $second), $tableName, true, false, 'utf8mb4');
 
-        $tableFilter = function ($testTable) use ($tableName) {
+        $tableFilter = function ($testTable) use ($tableName): bool {
             return $testTable === $tableName;
         };
 
@@ -159,21 +159,21 @@ class SchemaDiffTest extends IntegrationTestCase
         $actual = $outputBuffer->fetch();
         static::assertStringStartsWith($expected, $actual);
 
-        static::assertContains(getenv('DB_DATABASE_' . $first) . "@{$first}=ascii", $actual);
-        static::assertContains(getenv('DB_DATABASE_' . $second) . "@{$second}=utf8mb4", $actual);
+        static::assertStringContainsString(getenv('DB_DATABASE_' . $first) . "@{$first}=ascii", $actual);
+        static::assertStringContainsString(getenv('DB_DATABASE_' . $second) . "@{$second}=utf8mb4", $actual);
     }
 
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testDiffTableCharset(int $first, int $second)
+    public function testDiffTableCharset(int $first, int $second): void
     {
         $tableName = $this->generateTableName();
 
         $this->createTestTable(getenv('DB_DATABASE_' . $first), $tableName, true, false, null, 'ascii');
         $this->createTestTable(getenv('DB_DATABASE_' . $second), $tableName, true, false, null, 'utf8mb4');
 
-        $tableFilter = function ($testTable) use ($tableName) {
+        $tableFilter = function ($testTable) use ($tableName): bool {
             return $testTable === $tableName;
         };
 
@@ -190,7 +190,7 @@ class SchemaDiffTest extends IntegrationTestCase
         $actual = $outputBuffer->fetch();
         static::assertStringStartsWith($expected, $actual);
 
-        static::assertContains(getenv('DB_DATABASE_' . $first) . "@{$first}=ascii", $actual);
-        static::assertContains(getenv('DB_DATABASE_' . $second) . "@{$second}=utf8mb4", $actual);
+        static::assertStringContainsString(getenv('DB_DATABASE_' . $first) . "@{$first}=ascii", $actual);
+        static::assertStringContainsString(getenv('DB_DATABASE_' . $second) . "@{$second}=utf8mb4", $actual);
     }
 }

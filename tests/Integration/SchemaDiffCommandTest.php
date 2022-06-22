@@ -19,27 +19,15 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class SchemaDiffCommandTest extends IntegrationTestCase
 {
-    /**
-     * @var SchemaDiffCommand
-     */
-    private $command;
+    private SchemaDiffCommand $command;
 
-    /**
-     * @var CommandTester
-     */
-    private $commandTester;
+    private CommandTester $commandTester;
 
-    /**
-     * @var string
-     */
-    private $dsn1;
+    private string $dsn1;
 
-    /**
-     * @var string
-     */
-    private $dsn2;
+    private string $dsn2;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->command = new SchemaDiffCommand();
 
@@ -55,7 +43,7 @@ class SchemaDiffCommandTest extends IntegrationTestCase
         parent::setUp();
     }
 
-    public function testSame()
+    public function testSame(): void
     {
         $tableName = $this->generateTableName();
 
@@ -86,7 +74,7 @@ class SchemaDiffCommandTest extends IntegrationTestCase
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testMissingTable(int $first, int $second)
+    public function testMissingTable(int $first, int $second): void
     {
         $tableName = $this->generateTableName();
 
@@ -110,7 +98,7 @@ class SchemaDiffCommandTest extends IntegrationTestCase
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testMissingColumn(int $first, int $second)
+    public function testMissingColumn(int $first, int $second): void
     {
         $tableName = $this->generateTableName();
 
@@ -129,13 +117,13 @@ class SchemaDiffCommandTest extends IntegrationTestCase
         $expected = "Missing column {$tableName}.char_col missing on " .
             getenv('DB_DATABASE_' . $second) . "@{$second} exists on " . getenv('DB_DATABASE_' . $first) . "@{$first}";
         $output = $this->commandTester->getDisplay();
-        static::assertContains($expected, $output);
+        static::assertStringContainsString($expected, $output);
     }
 
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testMissingIndex(int $first, int $second)
+    public function testMissingIndex(int $first, int $second): void
     {
         $tableName = $this->generateTableName();
 
@@ -160,7 +148,7 @@ class SchemaDiffCommandTest extends IntegrationTestCase
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testDiffColumnCharset(int $first, int $second)
+    public function testDiffColumnCharset(int $first, int $second): void
     {
         $tableName = $this->generateTableName();
 
@@ -180,14 +168,14 @@ class SchemaDiffCommandTest extends IntegrationTestCase
         $output = $this->commandTester->getDisplay();
         static::assertStringStartsWith($expected, $output);
 
-        static::assertContains(getenv('DB_DATABASE_' . $first) . "@{$first}=ascii", $output);
-        static::assertContains(getenv('DB_DATABASE_' . $second) . "@{$second}=utf8mb4", $output);
+        static::assertStringContainsString(getenv('DB_DATABASE_' . $first) . "@{$first}=ascii", $output);
+        static::assertStringContainsString(getenv('DB_DATABASE_' . $second) . "@{$second}=utf8mb4", $output);
     }
 
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testDiffTableCharset(int $first, int $second)
+    public function testDiffTableCharset(int $first, int $second): void
     {
         $tableName = $this->generateTableName();
 
@@ -207,7 +195,7 @@ class SchemaDiffCommandTest extends IntegrationTestCase
         $output = $this->commandTester->getDisplay();
         static::assertStringStartsWith($expected, $output);
 
-        static::assertContains(getenv('DB_DATABASE_' . $first) . "@{$first}=ascii", $output);
-        static::assertContains(getenv('DB_DATABASE_' . $second) . "@{$second}=utf8mb4", $output);
+        static::assertStringContainsString(getenv('DB_DATABASE_' . $first) . "@{$first}=ascii", $output);
+        static::assertStringContainsString(getenv('DB_DATABASE_' . $second) . "@{$second}=utf8mb4", $output);
     }
 }

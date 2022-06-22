@@ -20,37 +20,28 @@ class SchemaDiffTest extends TestCase
     /**
      * @var OutputInterface|MockObject
      */
-    private $output;
+    private MockObject $output;
 
-    /**
-     * @var SchemaDiff
-     */
-    private $diff;
+    private SchemaDiff $diff;
 
     /**
      * @var SchemaInfo|MockObject
      */
-    private $schema1;
+    private MockObject $schema1;
 
     /**
      * @var SchemaInfo|MockObject
      */
-    private $schema2;
+    private MockObject $schema2;
 
-    /**
-     * @var string
-     */
-    private $schema1Name;
+    private string $schema1Name;
 
-    /**
-     * @var string
-     */
-    private $schema2Name;
+    private string $schema2Name;
 
     /**
      * @dataProvider dataFormatterAddStyles
      */
-    public function testFormatterAddStyles(array $hasStyles)
+    public function testFormatterAddStyles(array $hasStyles): void
     {
         $formatter = $this->createMock(OutputFormatter::class);
 
@@ -79,7 +70,7 @@ class SchemaDiffTest extends TestCase
             ['attribute', new OutputFormatterStyle('yellow')],
         ];
 
-        $expectedStyles = array_filter($newStyles, function ($idx) use ($hasStyles) {
+        $expectedStyles = array_filter($newStyles, function ($idx) use ($hasStyles): bool {
             return !$hasStyles[$idx];
         }, ARRAY_FILTER_USE_KEY);
 
@@ -99,7 +90,7 @@ class SchemaDiffTest extends TestCase
     public function dataFormatterAddStyles(): array
     {
         $styleCount = 5;
-        $totalCombos = pow(2, $styleCount);
+        $totalCombos = 2 ** $styleCount;
         $combinations = [];
         for ($i = 0; $i < $totalCombos; $i++) {
             $combo = str_pad(decbin($i), $styleCount, '0', STR_PAD_LEFT);
@@ -108,7 +99,7 @@ class SchemaDiffTest extends TestCase
         return $combinations;
     }
 
-    public function testDiffCompareSchemaInfo()
+    public function testDiffCompareSchemaInfo(): void
     {
         $this->initDiff();
         $this->initSchema();
@@ -132,7 +123,7 @@ class SchemaDiffTest extends TestCase
         $expected = [
             "<error>Schema attribute mismatch</error> attribute <attribute>{$attributeName}</attribute> differs:",
             "\t<schema>{$this->schema1Name}@1</schema>={$val1}",
-            "\t<schema>{$this->schema2Name}@2</schema>={$val2}"
+            "\t<schema>{$this->schema2Name}@2</schema>={$val2}",
         ];
         $this->output->expects(static::once())
             ->method('writeln')
@@ -145,7 +136,7 @@ class SchemaDiffTest extends TestCase
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testDiffHasTable(int $order1, int $order2)
+    public function testDiffHasTable(int $order1, int $order2): void
     {
         $this->initDiff();
         $this->initSchema();
@@ -156,7 +147,7 @@ class SchemaDiffTest extends TestCase
         $this->{'schema' . $order1}->expects(static::once())
             ->method('getTables')
             ->willReturn([
-                $tableName
+                $tableName,
             ]);
         // Second schema is not checked for the table if the first was missing
         $expectation = ($order1 === 2) ? static::never() : static::once();
@@ -186,7 +177,7 @@ class SchemaDiffTest extends TestCase
         static::assertTrue($hasDiff);
     }
 
-    public function testDiffCompareTableInfo()
+    public function testDiffCompareTableInfo(): void
     {
         $this->initDiff();
         $this->initSchema();
@@ -215,7 +206,7 @@ class SchemaDiffTest extends TestCase
             "<error>Table attribute mismatch</error> <table>{$tableName}</table> " .
                 "attribute <attribute>{$attributeName}</attribute> differs:",
             "\t<schema>{$this->schema1Name}@1</schema>={$val1}",
-            "\t<schema>{$this->schema2Name}@2</schema>={$val2}"
+            "\t<schema>{$this->schema2Name}@2</schema>={$val2}",
         ];
         $this->output->expects(static::once())
             ->method('writeln')
@@ -228,7 +219,7 @@ class SchemaDiffTest extends TestCase
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testDiffCompareColumns(int $order1, int $order2)
+    public function testDiffCompareColumns(int $order1, int $order2): void
     {
         $this->initDiff();
         $this->initSchema();
@@ -242,7 +233,7 @@ class SchemaDiffTest extends TestCase
             ->method('getColumns')
             ->with($tableName)
             ->willReturn([
-                $columnName
+                $columnName,
             ]);
         // Second schema is not checked for the column if the first was missing
         $expectation = ($order1 === 2) ? static::never() : static::once();
@@ -261,7 +252,7 @@ class SchemaDiffTest extends TestCase
             ->with($tableName, $columnName)
             ->willReturn(false);
 
-        $expected = "<error>Missing column</error> " .
+        $expected = '<error>Missing column</error> ' .
                 "<table>{$tableName}</table>.<column>{$columnName}</column> missing on " .
             "<schema>{$this->{'schema' . $order2 . 'Name'}}@{$order2}</schema> exists on " .
             "<schema>{$this->{'schema' . $order1 . 'Name'}}@{$order1}</schema>";
@@ -274,7 +265,7 @@ class SchemaDiffTest extends TestCase
         static::assertTrue($hasDiff);
     }
 
-    public function testDiffCompareColumnInfo()
+    public function testDiffCompareColumnInfo(): void
     {
         $this->initDiff();
         $this->initSchema();
@@ -301,11 +292,11 @@ class SchemaDiffTest extends TestCase
             ]);
 
         $expected = [
-            "<error>Column attribute mismatch</error> " .
+            '<error>Column attribute mismatch</error> ' .
                 "<table>{$tableName}</table>.<column>{$columnName}</column> " .
                 "attribute <attribute>{$attributeName}</attribute> differs:",
             "\t<schema>{$this->schema1Name}@1</schema>={$val1}",
-            "\t<schema>{$this->schema2Name}@2</schema>={$val2}"
+            "\t<schema>{$this->schema2Name}@2</schema>={$val2}",
         ];
         $this->output->expects(static::once())
             ->method('writeln')
@@ -318,7 +309,7 @@ class SchemaDiffTest extends TestCase
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testDiffCompareIndexes(int $order1, int $order2)
+    public function testDiffCompareIndexes(int $order1, int $order2): void
     {
         $this->initDiff();
         $this->initSchema();
@@ -332,7 +323,7 @@ class SchemaDiffTest extends TestCase
             ->method('getIndexes')
             ->with($tableName)
             ->willReturn([
-                $indexName
+                $indexName,
             ]);
         // Second schema is not checked for the index if the first was missing
         $expectation = ($order1 === 2) ? static::never() : static::once();
@@ -351,7 +342,7 @@ class SchemaDiffTest extends TestCase
             ->with($tableName, $indexName)
             ->willReturn(false);
 
-        $expected = "<error>Missing index</error> " .
+        $expected = '<error>Missing index</error> ' .
             "<table>{$tableName}</table>.<index>{$indexName}</index> missing on " .
             "<schema>{$this->{'schema' . $order2 . 'Name'}}@{$order2}</schema> exists on " .
             "<schema>{$this->{'schema' . $order1 . 'Name'}}@{$order1}</schema>";
@@ -364,7 +355,7 @@ class SchemaDiffTest extends TestCase
         static::assertTrue($hasDiff);
     }
 
-    public function testDiffCompareIndexInfo()
+    public function testDiffCompareIndexInfo(): void
     {
         $this->initDiff();
         $this->initSchema();
@@ -391,11 +382,11 @@ class SchemaDiffTest extends TestCase
             ]);
 
         $expected = [
-            "<error>Index attribute mismatch</error> " .
+            '<error>Index attribute mismatch</error> ' .
                 "<table>{$tableName}</table>.<index>{$indexName}</index> " .
                 "attribute <attribute>{$attributeName}</attribute> differs:",
             "\t<schema>{$this->schema1Name}@1</schema>={$val1}",
-            "\t<schema>{$this->schema2Name}@2</schema>={$val2}"
+            "\t<schema>{$this->schema2Name}@2</schema>={$val2}",
         ];
         $this->output->expects(static::once())
             ->method('writeln')
@@ -405,7 +396,7 @@ class SchemaDiffTest extends TestCase
         static::assertTrue($hasDiff);
     }
 
-    private function initDiff()
+    private function initDiff(): void
     {
         $formatter = $this->createMock(OutputFormatter::class);
 
@@ -419,7 +410,7 @@ class SchemaDiffTest extends TestCase
         $this->diff = new SchemaDiff($this->output);
     }
 
-    private function initSchema()
+    private function initSchema(): void
     {
         $this->schema1 = $this->createMock(SchemaInfo::class);
         $this->schema2 = $this->createMock(SchemaInfo::class);

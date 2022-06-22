@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Phlib\SchemaDiff;
@@ -11,16 +12,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SchemaDiff
 {
-    /**
-     * @var OutputInterface
-     */
-    private $output;
+    private OutputInterface $output;
 
-    /**
-     * Diff constructor.
-     *
-     * @param OutputInterface $output
-     */
     public function __construct(OutputInterface $output)
     {
         $this->output = $output;
@@ -28,15 +21,15 @@ class SchemaDiff
         $this->initStyles();
     }
 
-    private function initStyles()
+    private function initStyles(): void
     {
         $formatter = $this->output->getFormatter();
 
         $styles = [
-            'schema'    => new OutputFormatterStyle('green'),
-            'table'     => new OutputFormatterStyle('blue'),
-            'column'    => new OutputFormatterStyle('magenta'),
-            'index'     => new OutputFormatterStyle('cyan'),
+            'schema' => new OutputFormatterStyle('green'),
+            'table' => new OutputFormatterStyle('blue'),
+            'column' => new OutputFormatterStyle('magenta'),
+            'index' => new OutputFormatterStyle('cyan'),
             'attribute' => new OutputFormatterStyle('yellow'),
         ];
 
@@ -49,11 +42,6 @@ class SchemaDiff
         }
     }
 
-    /**
-     * @param SchemaInfo $schema1
-     * @param SchemaInfo $schema2
-     * @return bool
-     */
     public function diff(SchemaInfo $schema1, SchemaInfo $schema2): bool
     {
         $differences = false;
@@ -74,8 +62,8 @@ class SchemaDiff
                 $this->output->writeln(sprintf(
                     $msg,
                     $tableName,
-                    $schema1->getName().'@1',
-                    $schema2->getName().'@2'
+                    $schema1->getName() . '@1',
+                    $schema2->getName() . '@2'
                 ));
 
                 continue;
@@ -85,8 +73,8 @@ class SchemaDiff
                 $this->output->writeln(sprintf(
                     $msg,
                     $tableName,
-                    $schema2->getName().'@2',
-                    $schema1->getName().'@1'
+                    $schema2->getName() . '@2',
+                    $schema1->getName() . '@1'
                 ));
 
                 continue;
@@ -100,11 +88,6 @@ class SchemaDiff
         return $differences;
     }
 
-    /**
-     * @param SchemaInfo $schema1
-     * @param SchemaInfo $schema2
-     * @return bool
-     */
     private function compareSchemaInfo(SchemaInfo $schema1, SchemaInfo $schema2): bool
     {
         $differences = false;
@@ -114,12 +97,12 @@ class SchemaDiff
         $attributes = array_keys($schemaInfo1);
 
         foreach ($attributes as $attribute) {
-            if ($schemaInfo1[$attribute] != $schemaInfo2[$attribute]) {
+            if ($schemaInfo1[$attribute] !== $schemaInfo2[$attribute]) {
                 $differences = true;
                 $this->output->writeln([
-                    "<error>Schema attribute mismatch</error> attribute <attribute>$attribute</attribute> differs:",
+                    "<error>Schema attribute mismatch</error> attribute <attribute>{$attribute}</attribute> differs:",
                     "\t<schema>{$schema1->getName()}@1</schema>={$schemaInfo1[$attribute]}",
-                    "\t<schema>{$schema2->getName()}@2</schema>={$schemaInfo2[$attribute]}"
+                    "\t<schema>{$schema2->getName()}@2</schema>={$schemaInfo2[$attribute]}",
                 ]);
             }
         }
@@ -127,12 +110,6 @@ class SchemaDiff
         return $differences;
     }
 
-    /**
-     * @param SchemaInfo $schema1
-     * @param SchemaInfo $schema2
-     * @param string $tableName
-     * @return bool
-     */
     private function compareTableInfo(SchemaInfo $schema1, SchemaInfo $schema2, string $tableName): bool
     {
         $differences = false;
@@ -142,12 +119,12 @@ class SchemaDiff
         $attributes = array_keys($tableInfo1);
 
         foreach ($attributes as $attribute) {
-            if ($tableInfo1[$attribute] != $tableInfo2[$attribute]) {
+            if ($tableInfo1[$attribute] !== $tableInfo2[$attribute]) {
                 $differences = true;
                 $this->output->writeln([
-                    "<error>Table attribute mismatch</error> <table>{$tableName}</table> attribute <attribute>$attribute</attribute> differs:",
+                    "<error>Table attribute mismatch</error> <table>{$tableName}</table> attribute <attribute>{$attribute}</attribute> differs:",
                     "\t<schema>{$schema1->getName()}@1</schema>={$tableInfo1[$attribute]}",
-                    "\t<schema>{$schema2->getName()}@2</schema>={$tableInfo2[$attribute]}"
+                    "\t<schema>{$schema2->getName()}@2</schema>={$tableInfo2[$attribute]}",
                 ]);
             }
         }
@@ -155,12 +132,6 @@ class SchemaDiff
         return $differences;
     }
 
-    /**
-     * @param SchemaInfo $schema1
-     * @param SchemaInfo $schema2
-     * @param string $tableName
-     * @return bool
-     */
     private function compareColumns(SchemaInfo $schema1, SchemaInfo $schema2, string $tableName): bool
     {
         $differences = false;
@@ -178,8 +149,8 @@ class SchemaDiff
                         $msg,
                         $tableName,
                         $columnName,
-                        $schema1->getName().'@1',
-                        $schema2->getName().'@2'
+                        $schema1->getName() . '@1',
+                        $schema2->getName() . '@2'
                     )
                 );
 
@@ -193,8 +164,8 @@ class SchemaDiff
                         $msg,
                         $tableName,
                         $columnName,
-                        $schema2->getName().'@2',
-                        $schema1->getName().'@1'
+                        $schema2->getName() . '@2',
+                        $schema1->getName() . '@1'
                     )
                 );
 
@@ -207,13 +178,6 @@ class SchemaDiff
         return $differences;
     }
 
-    /**
-     * @param SchemaInfo $schema1
-     * @param SchemaInfo $schema2
-     * @param string $tableName
-     * @param string $columnName
-     * @return bool
-     */
     private function compareColumnInfo(SchemaInfo $schema1, SchemaInfo $schema2, string $tableName, string $columnName): bool
     {
         $differences = false;
@@ -222,12 +186,12 @@ class SchemaDiff
 
         $attributes = array_keys($columnInfo1);
         foreach ($attributes as $attribute) {
-            if ($columnInfo1[$attribute] != $columnInfo2[$attribute]) {
+            if ($columnInfo1[$attribute] !== $columnInfo2[$attribute]) {
                 $differences = true;
                 $this->output->writeln([
-                    "<error>Column attribute mismatch</error> <table>{$tableName}</table>.<column>{$columnName}</column> attribute <attribute>$attribute</attribute> differs:",
+                    "<error>Column attribute mismatch</error> <table>{$tableName}</table>.<column>{$columnName}</column> attribute <attribute>{$attribute}</attribute> differs:",
                     "\t<schema>{$schema1->getName()}@1</schema>={$columnInfo1[$attribute]}",
-                    "\t<schema>{$schema2->getName()}@2</schema>={$columnInfo2[$attribute]}"
+                    "\t<schema>{$schema2->getName()}@2</schema>={$columnInfo2[$attribute]}",
                 ]);
             }
         }
@@ -235,12 +199,6 @@ class SchemaDiff
         return $differences;
     }
 
-    /**
-     * @param SchemaInfo $schema1
-     * @param SchemaInfo $schema2
-     * @param string $tableName
-     * @return bool
-     */
     private function compareIndexes(SchemaInfo $schema1, SchemaInfo $schema2, string $tableName): bool
     {
         $differences = false;
@@ -257,8 +215,8 @@ class SchemaDiff
                     $msg,
                     $tableName,
                     $indexName,
-                    $schema1->getName().'@1',
-                    $schema2->getName().'@2'
+                    $schema1->getName() . '@1',
+                    $schema2->getName() . '@2'
                 ));
 
                 continue;
@@ -270,8 +228,8 @@ class SchemaDiff
                     $msg,
                     $tableName,
                     $indexName,
-                    $schema2->getName().'@2',
-                    $schema1->getName().'@1'
+                    $schema2->getName() . '@2',
+                    $schema1->getName() . '@1'
                 ));
 
                 continue;
@@ -283,13 +241,6 @@ class SchemaDiff
         return $differences;
     }
 
-    /**
-     * @param SchemaInfo $schema1
-     * @param SchemaInfo $schema2
-     * @param string $tableName
-     * @param string $indexName
-     * @return bool
-     */
     private function compareIndexInfo(SchemaInfo $schema1, SchemaInfo $schema2, string $tableName, string $indexName): bool
     {
         $differences = false;
@@ -298,12 +249,12 @@ class SchemaDiff
 
         $attributes = array_keys($indexInfo1);
         foreach ($attributes as $attribute) {
-            if ($indexInfo1[$attribute] != $indexInfo2[$attribute]) {
+            if ($indexInfo1[$attribute] !== $indexInfo2[$attribute]) {
                 $differences = true;
                 $this->output->writeln([
-                    "<error>Index attribute mismatch</error> <table>{$tableName}</table>.<index>{$indexName}</index> attribute <attribute>$attribute</attribute> differs:",
+                    "<error>Index attribute mismatch</error> <table>{$tableName}</table>.<index>{$indexName}</index> attribute <attribute>{$attribute}</attribute> differs:",
                     "\t<schema>{$schema1->getName()}@1</schema>={$indexInfo1[$attribute]}",
-                    "\t<schema>{$schema2->getName()}@2</schema>={$indexInfo2[$attribute]}"
+                    "\t<schema>{$schema2->getName()}@2</schema>={$indexInfo2[$attribute]}",
                 ]);
             }
         }

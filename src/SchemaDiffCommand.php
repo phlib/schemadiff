@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Phlib\SchemaDiff;
@@ -15,58 +16,32 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SchemaDiffCommand extends Command
 {
-    /**
-     * @var
-     */
-    private $ignoreDatabases;
+    private array $ignoreDatabases;
 
-    /**
-     * @var
-     */
-    private $ignoreDatabasesRegex;
+    private ?string $ignoreDatabasesRegex;
 
-    /**
-     * @var
-     */
-    private $databases;
+    private array $databases;
 
-    /**
-     * @var
-     */
-    private $databasesRegex;
+    private ?string $databasesRegex;
 
-    /**
-     * @var
-     */
-    private $ignoreTables;
+    private array $ignoreTables;
 
-    /**
-     * @var
-     */
-    private $ignoreTablesRegex;
+    private ?string $ignoreTablesRegex;
 
-    /**
-     * @var
-     */
-    private $tables;
+    private array $tables;
 
-    /**
-     * @var
-     */
-    private $tablesRegex;
+    private ?string $tablesRegex;
 
-    /**
-     *
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('schemadiff')
-            ->setDescription(<<<DESC
+            ->setDescription(
+                <<<DESC
 Schema Diff Tool
 
 Used to diff a single database schema against other database schemas.
 DESC
-);
+            );
 
         $this->addUsage('h=127.0.0.1,u=user,p=pass,D=db1 h=127.0.0.1,u=user,p=pass,D=db2');
         $this->addUsage('h=127.0.0.1,u=user,p=pass,D=db1 h=127.0.0.1,u=user,p=pass --ignore-databases="db1,dbtest"');
@@ -142,11 +117,6 @@ DESC
         );
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->initFilters($input);
@@ -182,28 +152,19 @@ DESC
         return $differences ? 1 : 0;
     }
 
-    /**
-     * @param \PDO $pdo
-     * @param string $database
-     * @param OutputInterface $output
-     * @return SchemaInfo
-     */
     private function createSchemaInfo(\PDO $pdo, string $database, OutputInterface $output): SchemaInfo
     {
-        $output->writeln("Fetching schema details for database <info>$database</info>", Output::VERBOSITY_DEBUG);
+        $output->writeln("Fetching schema details for database <info>{$database}</info>", Output::VERBOSITY_DEBUG);
         return SchemaInfoFactory::fromPdo(
             $pdo,
             $database,
-            function($tableName) use ($database, $output) {
+            function ($tableName) use ($database, $output): bool {
                 return $this->isTableAllowed($database, $tableName, $output);
             }
         );
     }
 
-    /**
-     * @param InputInterface $input
-     */
-    private function initFilters(InputInterface $input)
+    private function initFilters(InputInterface $input): void
     {
         // databases
         $this->ignoreDatabases = [];
@@ -226,7 +187,7 @@ DESC
         $this->ignoreTables = [];
         if ($input->getOption('ignore-tables')) {
             foreach (explode(',', $input->getOption('ignore-tables')) as $table) {
-                list($database, $table) = $this->splitUnquoteTable($table);
+                [$database, $table] = $this->splitUnquoteTable($table);
                 if (!isset($this->ignoreTables[$database])) {
                     $this->ignoreTables[$database] = [];
                 }
@@ -239,7 +200,7 @@ DESC
         $this->tables = [];
         if ($input->getOption('tables')) {
             foreach (explode(',', $input->getOption('tables')) as $table) {
-                list($database, $table) = $this->splitUnquoteTable($table);
+                [$database, $table] = $this->splitUnquoteTable($table);
                 if (!isset($this->tables[$database])) {
                     $this->tables[$database] = [];
                 }
@@ -250,13 +211,9 @@ DESC
         $this->tablesRegex = $input->getOption('tables-regex');
     }
 
-    /**
-     * @param string $table
-     * @return array
-     */
     private function splitUnquoteTable(string $table): array
     {
-        list($database, $table) = array_pad(explode('.', $table, 2), 2, null);
+        [$database, $table] = array_pad(explode('.', $table, 2), 2, null);
         if (!$table) {
             $table = $database;
             $database = '*';
@@ -265,7 +222,7 @@ DESC
         $regexes = [
             '/^`/' => '',
             '/`$/' => '',
-            '/``/' => '`'
+            '/``/' => '`',
         ];
 
         foreach ($regexes as $pattern => $replacement) {
@@ -279,76 +236,61 @@ DESC
         return [$database, $table];
     }
 
-    /**
-     * @param string $database
-     * @param OutputInterface $output
-     * @return bool
-     */
     private function isDatabaseAllowed(string $database, OutputInterface $output): bool
     {
         if (preg_match('/mysql|information_schema|performance_schema|lost\+found|percona|percona_schema|test/', $database) > 0) {
-            $output->writeln("Database <info>$database</info> is a system database, ignoring", Output::VERBOSITY_DEBUG);
+            $output->writeln("Database <info>{$database}</info> is a system database, ignoring", Output::VERBOSITY_DEBUG);
             return false;
         }
 
         if (isset($this->ignoreDatabases[$database])) {
-            $output->writeln("Database <info>$database</info> is in --ignore-databases list", Output::VERBOSITY_DEBUG);
+            $output->writeln("Database <info>{$database}</info> is in --ignore-databases list", Output::VERBOSITY_DEBUG);
             return false;
         }
 
         if ($this->ignoreDatabasesRegex && preg_match("/{$this->ignoreDatabasesRegex}/", $database)) {
-            $output->writeln("Database <info>$database</info> matches --ignore-databases-regex", Output::VERBOSITY_DEBUG);
+            $output->writeln("Database <info>{$database}</info> matches --ignore-databases-regex", Output::VERBOSITY_DEBUG);
             return false;
         }
 
         if ($this->databases && !isset($this->databases[$database])) {
-            $output->writeln("Database <info>$database</info> is not in --databases list, ignoring", Output::VERBOSITY_DEBUG);
+            $output->writeln("Database <info>{$database}</info> is not in --databases list, ignoring", Output::VERBOSITY_DEBUG);
             return false;
         }
 
         if ($this->databasesRegex && !preg_match("/{$this->databasesRegex}/", $database)) {
-            $output->writeln("Database <info>$database</info> does not match --databases-regex, ignoring", Output::VERBOSITY_DEBUG);
+            $output->writeln("Database <info>{$database}</info> does not match --databases-regex, ignoring", Output::VERBOSITY_DEBUG);
             return false;
         }
 
         return true;
     }
 
-    /**
-     * @param string $database
-     * @param string $table
-     * @param OutputInterface $output
-     * @return bool
-     */
     private function isTableAllowed(string $database, string $table, OutputInterface $output): bool
     {
         if (isset($this->ignoreTables['*'][$table]) || isset($this->ignoreTables[$database][$table])) {
-            $output->writeln("Table <info>$table</info> is in --ignore-tables list", Output::VERBOSITY_DEBUG);
+            $output->writeln("Table <info>{$table}</info> is in --ignore-tables list", Output::VERBOSITY_DEBUG);
             return false;
         }
 
         if ($this->ignoreTablesRegex && preg_match("/{$this->ignoreTablesRegex}/", $table)) {
-            $output->writeln("Table <info>$table</info> matches --ignore-tables-regex", Output::VERBOSITY_DEBUG);
+            $output->writeln("Table <info>{$table}</info> matches --ignore-tables-regex", Output::VERBOSITY_DEBUG);
             return false;
         }
 
         if ($this->tables && (!isset($this->tables['*'][$table]) && !isset($this->tables[$database][$table]))) {
-            $output->writeln("Table <info>$table</info> is not in --tables list, ignoring", Output::VERBOSITY_DEBUG);
+            $output->writeln("Table <info>{$table}</info> is not in --tables list, ignoring", Output::VERBOSITY_DEBUG);
             return false;
         }
 
         if ($this->tablesRegex && !preg_match("/{$this->tablesRegex}/", $table)) {
-            $output->writeln("Table <info>$table</info> does not match --tables-regex, ignoring", Output::VERBOSITY_DEBUG);
+            $output->writeln("Table <info>{$table}</info> does not match --tables-regex, ignoring", Output::VERBOSITY_DEBUG);
             return false;
         }
 
         return true;
     }
 
-    /**
-     * @param string $dsn
-     * @return array
-     */
     private function parseDsn(string $dsn): array
     {
         $allowedOptions = 'hupPD';
@@ -358,7 +300,7 @@ DESC
         foreach ($parts as $part) {
             $part = str_replace('\,', ',', $part);
 
-            if (preg_match('/^(.*)=(.*)$/' ,$part, $matches)) {
+            if (preg_match('/^(.*)=(.*)$/', $part, $matches)) {
                 if (!strstr($allowedOptions, $matches[1])) {
                     throw new \InvalidArgumentException('DSN contains invalid key');
                 }
@@ -369,10 +311,6 @@ DESC
         return $options;
     }
 
-    /**
-     * @param array $options
-     * @return \PDO
-     */
     private function createPdo(array $options): \PDO
     {
         $host = $options['h'] ?? '';
@@ -380,11 +318,11 @@ DESC
         $pass = $options['p'] ?? '';
         $port = $options['P'] ?? 3306;
 
-        $dsn = "mysql:host=$host;port=$port;charset=utf8";
+        $dsn = "mysql:host={$host};port={$port};charset=utf8";
 
         $options = [
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC
+            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
         ];
 
         return new \PDO($dsn, $user, $pass, $options);
