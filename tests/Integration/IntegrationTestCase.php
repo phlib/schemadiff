@@ -36,7 +36,7 @@ abstract class IntegrationTestCase extends TestCase
         );
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         foreach ($this->schemaTableQuoted as $schemaTableQuoted) {
             $this->pdo->query("DROP TABLE {$schemaTableQuoted}");

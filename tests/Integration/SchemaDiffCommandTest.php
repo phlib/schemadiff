@@ -117,7 +117,7 @@ class SchemaDiffCommandTest extends IntegrationTestCase
         $expected = "Missing column {$tableName}.char_col missing on " .
             getenv('DB_DATABASE_' . $second) . "@{$second} exists on " . getenv('DB_DATABASE_' . $first) . "@{$first}";
         $output = $this->commandTester->getDisplay();
-        static::assertContains($expected, $output);
+        static::assertStringContainsString($expected, $output);
     }
 
     /**
@@ -168,8 +168,8 @@ class SchemaDiffCommandTest extends IntegrationTestCase
         $output = $this->commandTester->getDisplay();
         static::assertStringStartsWith($expected, $output);
 
-        static::assertContains(getenv('DB_DATABASE_' . $first) . "@{$first}=ascii", $output);
-        static::assertContains(getenv('DB_DATABASE_' . $second) . "@{$second}=utf8mb4", $output);
+        static::assertStringContainsString(getenv('DB_DATABASE_' . $first) . "@{$first}=ascii", $output);
+        static::assertStringContainsString(getenv('DB_DATABASE_' . $second) . "@{$second}=utf8mb4", $output);
     }
 
     /**
@@ -195,7 +195,7 @@ class SchemaDiffCommandTest extends IntegrationTestCase
         $output = $this->commandTester->getDisplay();
         static::assertStringStartsWith($expected, $output);
 
-        static::assertContains(getenv('DB_DATABASE_' . $first) . "@{$first}=ascii", $output);
-        static::assertContains(getenv('DB_DATABASE_' . $second) . "@{$second}=utf8mb4", $output);
+        static::assertStringContainsString(getenv('DB_DATABASE_' . $first) . "@{$first}=ascii", $output);
+        static::assertStringContainsString(getenv('DB_DATABASE_' . $second) . "@{$second}=utf8mb4", $output);
     }
 }
