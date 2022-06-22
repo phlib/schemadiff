@@ -37,5 +37,5 @@
             "Phlib\\SchemaDiff\\Test\\": "tests"
         }
     },
-    "bin": ["schemadiff"]
+    "bin": ["bin/schemadiff"]
 }
