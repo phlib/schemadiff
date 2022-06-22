@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Phlib\SchemaDiff;
@@ -8,12 +9,6 @@ namespace Phlib\SchemaDiff;
  */
 class SchemaInfoFactory
 {
-    /**
-     * @param \PDO $connection
-     * @param string $schemaName
-     * @param callable $tableFilter
-     * @return SchemaInfo
-     */
     public static function fromPdo(\PDO $connection, string $schemaName, callable $tableFilter = null): SchemaInfo
     {
         $sql = <<<SQL
@@ -27,7 +22,7 @@ SQL;
         $schemaStmt->execute([$schemaName]);
         $schemaInfo = $schemaStmt->fetch(\PDO::FETCH_ASSOC);
         if (!$schemaInfo) {
-            throw new \InvalidArgumentException("Schema $schemaName doesn't exist");
+            throw new \InvalidArgumentException("Schema {$schemaName} doesn't exist");
         }
 
         $sql = <<<SQL
@@ -98,14 +93,14 @@ SQL;
             foreach ($indexResult as $indexName => $indexInfo) {
                 $indexes[$indexName] = [
                     'columns' => implode(',', array_column($indexInfo, 'COLUMN_NAME')),
-                    'unique'  => $indexInfo[0]['NON_UNIQUE'] == 0 ? 'Yes' : 'No'
+                    'unique' => $indexInfo[0]['NON_UNIQUE'] == 0 ? 'Yes' : 'No',
                 ];
             }
 
             $tableData[$tableName] = [
                 'TABLE_INFO' => $tableInfo,
-                'COLUMNS'    => $columns,
-                'INDEXES'    => $indexes
+                'COLUMNS' => $columns,
+                'INDEXES' => $indexes,
             ];
         }
 

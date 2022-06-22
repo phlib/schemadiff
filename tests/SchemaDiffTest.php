@@ -132,7 +132,7 @@ class SchemaDiffTest extends TestCase
         $expected = [
             "<error>Schema attribute mismatch</error> attribute <attribute>{$attributeName}</attribute> differs:",
             "\t<schema>{$this->schema1Name}@1</schema>={$val1}",
-            "\t<schema>{$this->schema2Name}@2</schema>={$val2}"
+            "\t<schema>{$this->schema2Name}@2</schema>={$val2}",
         ];
         $this->output->expects(static::once())
             ->method('writeln')
@@ -156,7 +156,7 @@ class SchemaDiffTest extends TestCase
         $this->{'schema' . $order1}->expects(static::once())
             ->method('getTables')
             ->willReturn([
-                $tableName
+                $tableName,
             ]);
         // Second schema is not checked for the table if the first was missing
         $expectation = ($order1 === 2) ? static::never() : static::once();
@@ -215,7 +215,7 @@ class SchemaDiffTest extends TestCase
             "<error>Table attribute mismatch</error> <table>{$tableName}</table> " .
                 "attribute <attribute>{$attributeName}</attribute> differs:",
             "\t<schema>{$this->schema1Name}@1</schema>={$val1}",
-            "\t<schema>{$this->schema2Name}@2</schema>={$val2}"
+            "\t<schema>{$this->schema2Name}@2</schema>={$val2}",
         ];
         $this->output->expects(static::once())
             ->method('writeln')
@@ -242,7 +242,7 @@ class SchemaDiffTest extends TestCase
             ->method('getColumns')
             ->with($tableName)
             ->willReturn([
-                $columnName
+                $columnName,
             ]);
         // Second schema is not checked for the column if the first was missing
         $expectation = ($order1 === 2) ? static::never() : static::once();
@@ -261,7 +261,7 @@ class SchemaDiffTest extends TestCase
             ->with($tableName, $columnName)
             ->willReturn(false);
 
-        $expected = "<error>Missing column</error> " .
+        $expected = '<error>Missing column</error> ' .
                 "<table>{$tableName}</table>.<column>{$columnName}</column> missing on " .
             "<schema>{$this->{'schema' . $order2 . 'Name'}}@{$order2}</schema> exists on " .
             "<schema>{$this->{'schema' . $order1 . 'Name'}}@{$order1}</schema>";
@@ -301,11 +301,11 @@ class SchemaDiffTest extends TestCase
             ]);
 
         $expected = [
-            "<error>Column attribute mismatch</error> " .
+            '<error>Column attribute mismatch</error> ' .
                 "<table>{$tableName}</table>.<column>{$columnName}</column> " .
                 "attribute <attribute>{$attributeName}</attribute> differs:",
             "\t<schema>{$this->schema1Name}@1</schema>={$val1}",
-            "\t<schema>{$this->schema2Name}@2</schema>={$val2}"
+            "\t<schema>{$this->schema2Name}@2</schema>={$val2}",
         ];
         $this->output->expects(static::once())
             ->method('writeln')
@@ -332,7 +332,7 @@ class SchemaDiffTest extends TestCase
             ->method('getIndexes')
             ->with($tableName)
             ->willReturn([
-                $indexName
+                $indexName,
             ]);
         // Second schema is not checked for the index if the first was missing
         $expectation = ($order1 === 2) ? static::never() : static::once();
@@ -351,7 +351,7 @@ class SchemaDiffTest extends TestCase
             ->with($tableName, $indexName)
             ->willReturn(false);
 
-        $expected = "<error>Missing index</error> " .
+        $expected = '<error>Missing index</error> ' .
             "<table>{$tableName}</table>.<index>{$indexName}</index> missing on " .
             "<schema>{$this->{'schema' . $order2 . 'Name'}}@{$order2}</schema> exists on " .
             "<schema>{$this->{'schema' . $order1 . 'Name'}}@{$order1}</schema>";
@@ -391,11 +391,11 @@ class SchemaDiffTest extends TestCase
             ]);
 
         $expected = [
-            "<error>Index attribute mismatch</error> " .
+            '<error>Index attribute mismatch</error> ' .
                 "<table>{$tableName}</table>.<index>{$indexName}</index> " .
                 "attribute <attribute>{$attributeName}</attribute> differs:",
             "\t<schema>{$this->schema1Name}@1</schema>={$val1}",
-            "\t<schema>{$this->schema2Name}@2</schema>={$val2}"
+            "\t<schema>{$this->schema2Name}@2</schema>={$val2}",
         ];
         $this->output->expects(static::once())
             ->method('writeln')
