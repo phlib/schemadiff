@@ -39,7 +39,7 @@ class SchemaDiffCommandTest extends IntegrationTestCase
      */
     private $dsn2;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->command = new SchemaDiffCommand();
 
@@ -55,7 +55,7 @@ class SchemaDiffCommandTest extends IntegrationTestCase
         parent::setUp();
     }
 
-    public function testSame()
+    public function testSame(): void
     {
         $tableName = $this->generateTableName();
 
@@ -86,7 +86,7 @@ class SchemaDiffCommandTest extends IntegrationTestCase
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testMissingTable(int $first, int $second)
+    public function testMissingTable(int $first, int $second): void
     {
         $tableName = $this->generateTableName();
 
@@ -110,7 +110,7 @@ class SchemaDiffCommandTest extends IntegrationTestCase
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testMissingColumn(int $first, int $second)
+    public function testMissingColumn(int $first, int $second): void
     {
         $tableName = $this->generateTableName();
 
@@ -135,7 +135,7 @@ class SchemaDiffCommandTest extends IntegrationTestCase
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testMissingIndex(int $first, int $second)
+    public function testMissingIndex(int $first, int $second): void
     {
         $tableName = $this->generateTableName();
 
@@ -160,7 +160,7 @@ class SchemaDiffCommandTest extends IntegrationTestCase
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testDiffColumnCharset(int $first, int $second)
+    public function testDiffColumnCharset(int $first, int $second): void
     {
         $tableName = $this->generateTableName();
 
@@ -187,7 +187,7 @@ class SchemaDiffCommandTest extends IntegrationTestCase
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testDiffTableCharset(int $first, int $second)
+    public function testDiffTableCharset(int $first, int $second): void
     {
         $tableName = $this->generateTableName();
 

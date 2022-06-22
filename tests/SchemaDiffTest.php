@@ -50,7 +50,7 @@ class SchemaDiffTest extends TestCase
     /**
      * @dataProvider dataFormatterAddStyles
      */
-    public function testFormatterAddStyles(array $hasStyles)
+    public function testFormatterAddStyles(array $hasStyles): void
     {
         $formatter = $this->createMock(OutputFormatter::class);
 
@@ -79,7 +79,7 @@ class SchemaDiffTest extends TestCase
             ['attribute', new OutputFormatterStyle('yellow')],
         ];
 
-        $expectedStyles = array_filter($newStyles, function ($idx) use ($hasStyles) {
+        $expectedStyles = array_filter($newStyles, function ($idx) use ($hasStyles): bool {
             return !$hasStyles[$idx];
         }, ARRAY_FILTER_USE_KEY);
 
@@ -99,7 +99,7 @@ class SchemaDiffTest extends TestCase
     public function dataFormatterAddStyles(): array
     {
         $styleCount = 5;
-        $totalCombos = pow(2, $styleCount);
+        $totalCombos = 2 ** $styleCount;
         $combinations = [];
         for ($i = 0; $i < $totalCombos; $i++) {
             $combo = str_pad(decbin($i), $styleCount, '0', STR_PAD_LEFT);
@@ -108,7 +108,7 @@ class SchemaDiffTest extends TestCase
         return $combinations;
     }
 
-    public function testDiffCompareSchemaInfo()
+    public function testDiffCompareSchemaInfo(): void
     {
         $this->initDiff();
         $this->initSchema();
@@ -145,7 +145,7 @@ class SchemaDiffTest extends TestCase
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testDiffHasTable(int $order1, int $order2)
+    public function testDiffHasTable(int $order1, int $order2): void
     {
         $this->initDiff();
         $this->initSchema();
@@ -186,7 +186,7 @@ class SchemaDiffTest extends TestCase
         static::assertTrue($hasDiff);
     }
 
-    public function testDiffCompareTableInfo()
+    public function testDiffCompareTableInfo(): void
     {
         $this->initDiff();
         $this->initSchema();
@@ -228,7 +228,7 @@ class SchemaDiffTest extends TestCase
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testDiffCompareColumns(int $order1, int $order2)
+    public function testDiffCompareColumns(int $order1, int $order2): void
     {
         $this->initDiff();
         $this->initSchema();
@@ -274,7 +274,7 @@ class SchemaDiffTest extends TestCase
         static::assertTrue($hasDiff);
     }
 
-    public function testDiffCompareColumnInfo()
+    public function testDiffCompareColumnInfo(): void
     {
         $this->initDiff();
         $this->initSchema();
@@ -318,7 +318,7 @@ class SchemaDiffTest extends TestCase
     /**
      * @dataProvider dataSchemaOrder
      */
-    public function testDiffCompareIndexes(int $order1, int $order2)
+    public function testDiffCompareIndexes(int $order1, int $order2): void
     {
         $this->initDiff();
         $this->initSchema();
@@ -364,7 +364,7 @@ class SchemaDiffTest extends TestCase
         static::assertTrue($hasDiff);
     }
 
-    public function testDiffCompareIndexInfo()
+    public function testDiffCompareIndexInfo(): void
     {
         $this->initDiff();
         $this->initSchema();
@@ -405,7 +405,7 @@ class SchemaDiffTest extends TestCase
         static::assertTrue($hasDiff);
     }
 
-    private function initDiff()
+    private function initDiff(): void
     {
         $formatter = $this->createMock(OutputFormatter::class);
 
@@ -419,7 +419,7 @@ class SchemaDiffTest extends TestCase
         $this->diff = new SchemaDiff($this->output);
     }
 
-    private function initSchema()
+    private function initSchema(): void
     {
         $this->schema1 = $this->createMock(SchemaInfo::class);
         $this->schema2 = $this->createMock(SchemaInfo::class);

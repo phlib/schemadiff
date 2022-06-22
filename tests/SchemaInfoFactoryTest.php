@@ -63,7 +63,7 @@ class SchemaInfoFactoryTest extends TestCase
      */
     private $indexSql;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->schemaName = sha1(uniqid());
         $this->tableName = sha1(uniqid());
@@ -161,7 +161,7 @@ SQL;
         parent::setUp();
     }
 
-    public function testFromPdoSchemaInfo()
+    public function testFromPdoSchemaInfo(): void
     {
         // Set up all the expected SQL queries
         $tablesStmt = $this->createMock(\PDOStatement::class);
@@ -252,7 +252,7 @@ SQL;
         );
     }
 
-    public function testFromPdoInvalidSchema()
+    public function testFromPdoInvalidSchema(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("Schema {$this->schemaName} doesn't exist");
@@ -274,7 +274,7 @@ SQL;
         SchemaInfoFactory::fromPdo($this->pdo, $this->schemaName);
     }
 
-    public function testFromPdoTableFilter()
+    public function testFromPdoTableFilter(): void
     {
         // Set up all the expected SQL queries
         $tablesStmt = $this->createMock(\PDOStatement::class);
@@ -314,7 +314,7 @@ SQL;
             ->willReturnOnConsecutiveCalls(...array_column($statementMap, 'return'));
 
         // Use the Factory to create the SchemaInfo
-        $tableFilter = function () {
+        $tableFilter = function (): bool {
             return false;
         };
         $schemaInfo = SchemaInfoFactory::fromPdo($this->pdo, $this->schemaName, $tableFilter);

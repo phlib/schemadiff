@@ -37,7 +37,7 @@ class SchemaInfoTest extends TestCase
      */
     private $schemaInfo;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->schemaName = sha1(uniqid());
         $this->tableName = sha1(uniqid());
@@ -79,17 +79,17 @@ class SchemaInfoTest extends TestCase
         parent::setUp();
     }
 
-    public function testGetName()
+    public function testGetName(): void
     {
         static::assertSame($this->schemaName, $this->schemaInfo->getName());
     }
 
-    public function testGetInfo()
+    public function testGetInfo(): void
     {
         static::assertSame($this->schemaData, $this->schemaInfo->getInfo());
     }
 
-    public function testGetTables()
+    public function testGetTables(): void
     {
         $expected = [
             $this->tableName,
@@ -98,17 +98,17 @@ class SchemaInfoTest extends TestCase
         static::assertSame($expected, $this->schemaInfo->getTables());
     }
 
-    public function testHasTableTrue()
+    public function testHasTableTrue(): void
     {
         static::assertTrue($this->schemaInfo->hasTable($this->tableName));
     }
 
-    public function testHasTableFalse()
+    public function testHasTableFalse(): void
     {
         static::assertFalse($this->schemaInfo->hasTable('does-not-exist'));
     }
 
-    public function testGetTableInfo()
+    public function testGetTableInfo(): void
     {
         static::assertSame(
             $this->tableData[$this->tableName]['TABLE_INFO'],
@@ -116,7 +116,7 @@ class SchemaInfoTest extends TestCase
         );
     }
 
-    public function testGetIndexes()
+    public function testGetIndexes(): void
     {
         $expected = [
             'PRIMARY',
@@ -125,17 +125,17 @@ class SchemaInfoTest extends TestCase
         static::assertSame($expected, $this->schemaInfo->getIndexes($this->tableName));
     }
 
-    public function testHasIndexTrue()
+    public function testHasIndexTrue(): void
     {
         static::assertTrue($this->schemaInfo->hasIndex($this->tableName, 'PRIMARY'));
     }
 
-    public function testHasIndexFalse()
+    public function testHasIndexFalse(): void
     {
         static::assertFalse($this->schemaInfo->hasIndex($this->tableName, 'does-not-exist'));
     }
 
-    public function testGetIndexInfo()
+    public function testGetIndexInfo(): void
     {
         static::assertSame(
             $this->tableData[$this->tableName]['INDEXES']['PRIMARY'],
@@ -143,7 +143,7 @@ class SchemaInfoTest extends TestCase
         );
     }
 
-    public function testGetColumns()
+    public function testGetColumns(): void
     {
         $expected = [
             'test_id',
@@ -152,17 +152,17 @@ class SchemaInfoTest extends TestCase
         static::assertSame($expected, $this->schemaInfo->getColumns($this->tableName));
     }
 
-    public function testHasColumnTrue()
+    public function testHasColumnTrue(): void
     {
         static::assertTrue($this->schemaInfo->hasColumn($this->tableName, 'test_id'));
     }
 
-    public function testHasColumnFalse()
+    public function testHasColumnFalse(): void
     {
         static::assertFalse($this->schemaInfo->hasColumn($this->tableName, 'does-not-exist'));
     }
 
-    public function testGetColumnInfo()
+    public function testGetColumnInfo(): void
     {
         static::assertSame(
             $this->tableData[$this->tableName]['COLUMNS']['test_id'],

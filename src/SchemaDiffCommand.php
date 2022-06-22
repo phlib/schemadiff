@@ -56,7 +56,7 @@ class SchemaDiffCommand extends Command
      */
     private $tablesRegex;
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setName('schemadiff')
             ->setDescription(
@@ -182,13 +182,13 @@ DESC
         return SchemaInfoFactory::fromPdo(
             $pdo,
             $database,
-            function ($tableName) use ($database, $output) {
+            function ($tableName) use ($database, $output): bool {
                 return $this->isTableAllowed($database, $tableName, $output);
             }
         );
     }
 
-    private function initFilters(InputInterface $input)
+    private function initFilters(InputInterface $input): void
     {
         // databases
         $this->ignoreDatabases = [];
@@ -211,7 +211,7 @@ DESC
         $this->ignoreTables = [];
         if ($input->getOption('ignore-tables')) {
             foreach (explode(',', $input->getOption('ignore-tables')) as $table) {
-                list($database, $table) = $this->splitUnquoteTable($table);
+                [$database, $table] = $this->splitUnquoteTable($table);
                 if (!isset($this->ignoreTables[$database])) {
                     $this->ignoreTables[$database] = [];
                 }
@@ -224,7 +224,7 @@ DESC
         $this->tables = [];
         if ($input->getOption('tables')) {
             foreach (explode(',', $input->getOption('tables')) as $table) {
-                list($database, $table) = $this->splitUnquoteTable($table);
+                [$database, $table] = $this->splitUnquoteTable($table);
                 if (!isset($this->tables[$database])) {
                     $this->tables[$database] = [];
                 }
@@ -237,7 +237,7 @@ DESC
 
     private function splitUnquoteTable(string $table): array
     {
-        list($database, $table) = array_pad(explode('.', $table, 2), 2, null);
+        [$database, $table] = array_pad(explode('.', $table, 2), 2, null);
         if (!$table) {
             $table = $database;
             $database = '*';

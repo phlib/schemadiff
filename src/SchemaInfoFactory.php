@@ -93,7 +93,7 @@ SQL;
             foreach ($indexResult as $indexName => $indexInfo) {
                 $indexes[$indexName] = [
                     'columns' => implode(',', array_column($indexInfo, 'COLUMN_NAME')),
-                    'unique' => $indexInfo[0]['NON_UNIQUE'] == 0 ? 'Yes' : 'No',
+                    'unique' => (int)$indexInfo[0]['NON_UNIQUE'] === 0 ? 'Yes' : 'No',
                 ];
             }
 

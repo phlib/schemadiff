@@ -24,12 +24,7 @@ class SchemaInfo
      */
     private $tableData;
 
-    /**
-     * TableInfo constructor.
-     *
-     * @param string $name
-     */
-    public function __construct($name, array $schemaData, array $tableData)
+    public function __construct(string $name, array $schemaData, array $tableData)
     {
         $this->name = $name;
         $this->schemaData = $schemaData;

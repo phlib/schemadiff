@@ -21,7 +21,7 @@ abstract class IntegrationTestCase extends TestCase
      */
     private $schemaTableQuoted = [];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if ((bool)getenv('INTEGRATION_ENABLED') !== true) {
             static::markTestSkipped();

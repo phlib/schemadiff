@@ -19,7 +19,7 @@
         }
     ],
     "require": {
-        "php": "^7",
+        "php": "^7.1",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
         "symfony/console": "^3.2|^4|^5"

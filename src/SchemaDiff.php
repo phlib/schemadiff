@@ -24,7 +24,7 @@ class SchemaDiff
         $this->initStyles();
     }
 
-    private function initStyles()
+    private function initStyles(): void
     {
         $formatter = $this->output->getFormatter();
 
