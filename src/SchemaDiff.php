@@ -12,10 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SchemaDiff
 {
-    /**
-     * @var OutputInterface
-     */
-    private $output;
+    private OutputInterface $output;
 
     public function __construct(OutputInterface $output)
     {

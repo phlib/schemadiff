@@ -12,30 +12,15 @@ use PHPUnit\Framework\TestCase;
  */
 class SchemaInfoTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    private $schemaName;
+    private string $schemaName;
 
-    /**
-     * @var string
-     */
-    private $tableName;
+    private string $tableName;
 
-    /**
-     * @var string[]
-     */
-    private $schemaData;
+    private array $schemaData;
 
-    /**
-     * @var array[]
-     */
-    private $tableData;
+    private array $tableData;
 
-    /**
-     * @var SchemaInfo
-     */
-    private $schemaInfo;
+    private SchemaInfo $schemaInfo;
 
     protected function setUp(): void
     {

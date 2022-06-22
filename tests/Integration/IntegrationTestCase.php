@@ -11,15 +11,9 @@ use PHPUnit\Framework\TestCase;
  */
 abstract class IntegrationTestCase extends TestCase
 {
-    /**
-     * @var \PDO
-     */
-    protected $pdo;
+    protected \PDO $pdo;
 
-    /**
-     * @var array
-     */
-    private $schemaTableQuoted = [];
+    private array $schemaTableQuoted = [];
 
     protected function setUp(): void
     {

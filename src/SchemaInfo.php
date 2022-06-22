@@ -9,20 +9,11 @@ namespace Phlib\SchemaDiff;
  */
 class SchemaInfo
 {
-    /**
-     * @var string
-     */
-    private $name;
+    private string $name;
 
-    /**
-     * @var array
-     */
-    private $schemaData;
+    private array $schemaData;
 
-    /**
-     * @var array
-     */
-    private $tableData;
+    private array $tableData;
 
     public function __construct(string $name, array $schemaData, array $tableData)
     {

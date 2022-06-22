@@ -20,32 +20,23 @@ class SchemaDiffTest extends TestCase
     /**
      * @var OutputInterface|MockObject
      */
-    private $output;
+    private MockObject $output;
 
-    /**
-     * @var SchemaDiff
-     */
-    private $diff;
+    private SchemaDiff $diff;
 
     /**
      * @var SchemaInfo|MockObject
      */
-    private $schema1;
+    private MockObject $schema1;
 
     /**
      * @var SchemaInfo|MockObject
      */
-    private $schema2;
+    private MockObject $schema2;
 
-    /**
-     * @var string
-     */
-    private $schema1Name;
+    private string $schema1Name;
 
-    /**
-     * @var string
-     */
-    private $schema2Name;
+    private string $schema2Name;
 
     /**
      * @dataProvider dataFormatterAddStyles

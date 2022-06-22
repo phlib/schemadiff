@@ -13,55 +13,31 @@ use PHPUnit\Framework\TestCase;
  */
 class SchemaInfoFactoryTest extends TestCase
 {
-    /**
-     * @var string
-     */
-    private $schemaName;
+    private string $schemaName;
 
-    /**
-     * @var string
-     */
-    private $tableName;
+    private string $tableName;
 
-    /**
-     * @var string[]
-     */
-    private $schemaData;
+    private array $schemaData;
 
-    /**
-     * @var array[]
-     */
-    private $tableData;
+    private array $tableData;
 
     /**
      * @var \PDO|MockObject
      */
-    private $pdo;
+    private MockObject $pdo;
 
-    /**
-     * @var string
-     */
-    private $schemaSql;
+    private string $schemaSql;
 
     /**
      * @var \PDOStatement|MockObject
      */
-    private $schemaStmt;
+    private MockObject $schemaStmt;
 
-    /**
-     * @var string
-     */
-    private $tablesSql;
+    private string $tablesSql;
 
-    /**
-     * @var string
-     */
-    private $columnsSql;
+    private string $columnsSql;
 
-    /**
-     * @var string
-     */
-    private $indexSql;
+    private string $indexSql;
 
     protected function setUp(): void
     {

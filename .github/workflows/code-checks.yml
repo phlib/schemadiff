@@ -12,9 +12,6 @@ jobs:
     strategy:
       matrix:
         php:
-          - '7.1'
-          - '7.2'
-          - '7.3'
           - '7.4'
 
     name: PHP ${{ matrix.php }} tests
@@ -22,25 +19,10 @@ jobs:
     env:
       DB_HOST: 127.0.0.1
       DB_PORT: 3306
-      DB_USERNAME: admin
-      DB_PASSWORD: adminpass
+      DB_USERNAME: root
+      DB_PASSWORD: root
       DB_DATABASE_1: test_database_1
       DB_DATABASE_2: test_database_2
-      DB_ROOT_USERNAME: root
-      DB_ROOT_PASSWORD: rootpass
-
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_DATABASE: ${{ env.DB_DATABASE_1 }}
-          MYSQL_HOST: ${{ env.DB_HOST }}
-          MYSQL_USER: ${{ env.DB_USERNAME }}
-          MYSQL_PASSWORD: ${{ env.DB_PASSWORD }}
-          MYSQL_ROOT_PASSWORD: ${{ env.DB_ROOT_PASSWORD }}
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - name: Checkout
@@ -48,8 +30,10 @@ jobs:
 
       - name: Set up MySQL
         run: |
-          mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE_2 }};' -h${{ env.DB_HOST }} -u${{ env.DB_ROOT_USERNAME }} -p${{ env.DB_ROOT_PASSWORD }}
-          mysql -e 'GRANT ALL PRIVILEGES ON ${{ env.DB_DATABASE_2 }}.* TO "${{ env.DB_USERNAME }}"@"%";' -h${{ env.DB_HOST }} -u${{ env.DB_ROOT_USERNAME }} -p${{ env.DB_ROOT_PASSWORD }}
+          sudo /etc/init.d/mysql start
+          mysql -e 'SHOW VARIABLES LIKE "version%";' -u${{ env.DB_USERNAME }} -p${{ env.DB_PASSWORD }}
+          mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE_1 }};' -u${{ env.DB_USERNAME }} -p${{ env.DB_PASSWORD }}
+          mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE_2 }};' -u${{ env.DB_USERNAME }} -p${{ env.DB_PASSWORD }}
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2

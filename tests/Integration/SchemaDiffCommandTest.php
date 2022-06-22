@@ -19,25 +19,13 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 class SchemaDiffCommandTest extends IntegrationTestCase
 {
-    /**
-     * @var SchemaDiffCommand
-     */
-    private $command;
+    private SchemaDiffCommand $command;
 
-    /**
-     * @var CommandTester
-     */
-    private $commandTester;
+    private CommandTester $commandTester;
 
-    /**
-     * @var string
-     */
-    private $dsn1;
+    private string $dsn1;
 
-    /**
-     * @var string
-     */
-    private $dsn2;
+    private string $dsn2;
 
     protected function setUp(): void
     {

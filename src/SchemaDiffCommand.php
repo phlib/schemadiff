@@ -16,45 +16,21 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SchemaDiffCommand extends Command
 {
-    /**
-     * @var
-     */
-    private $ignoreDatabases;
+    private array $ignoreDatabases;
 
-    /**
-     * @var
-     */
-    private $ignoreDatabasesRegex;
+    private ?string $ignoreDatabasesRegex;
 
-    /**
-     * @var
-     */
-    private $databases;
+    private array $databases;
 
-    /**
-     * @var
-     */
-    private $databasesRegex;
+    private ?string $databasesRegex;
 
-    /**
-     * @var
-     */
-    private $ignoreTables;
+    private array $ignoreTables;
 
-    /**
-     * @var
-     */
-    private $ignoreTablesRegex;
+    private ?string $ignoreTablesRegex;
 
-    /**
-     * @var
-     */
-    private $tables;
+    private array $tables;
 
-    /**
-     * @var
-     */
-    private $tablesRegex;
+    private ?string $tablesRegex;
 
     protected function configure(): void
     {
