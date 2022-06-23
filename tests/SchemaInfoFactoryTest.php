@@ -204,7 +204,7 @@ SQL;
             ->willReturnOnConsecutiveCalls(...array_column($statementMap, 'return'));
 
         // Use the Factory to create the SchemaInfo
-        $schemaInfo = SchemaInfoFactory::fromPdo($this->pdo, $this->schemaName);
+        $schemaInfo = (new SchemaInfoFactory())->fromPdo($this->pdo, $this->schemaName);
 
         // Test the SchemaInfo constructor params:
         // - schemaName
@@ -247,7 +247,7 @@ SQL;
             ->with($this->schemaSql)
             ->willReturn($schemaStmt);
 
-        SchemaInfoFactory::fromPdo($this->pdo, $this->schemaName);
+        (new SchemaInfoFactory())->fromPdo($this->pdo, $this->schemaName);
     }
 
     public function testFromPdoTableFilter(): void
@@ -293,7 +293,7 @@ SQL;
         $tableFilter = function (): bool {
             return false;
         };
-        $schemaInfo = SchemaInfoFactory::fromPdo($this->pdo, $this->schemaName, $tableFilter);
+        $schemaInfo = (new SchemaInfoFactory())->fromPdo($this->pdo, $this->schemaName, $tableFilter);
 
         // No tables should be found
         static::assertEmpty($schemaInfo->getTables());

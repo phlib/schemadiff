@@ -16,6 +16,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SchemaDiffCommand extends Command
 {
+    private SchemaInfoFactory $schemaInfoFactory;
+
+    private \Closure $schemaDiffFactory;
+
     private array $ignoreDatabases;
 
     private ?string $ignoreDatabasesRegex;
@@ -31,6 +35,16 @@ class SchemaDiffCommand extends Command
     private array $tables;
 
     private ?string $tablesRegex;
+
+    public function __construct(
+        SchemaInfoFactory $schemaInfoFactory,
+        \Closure $schemaDiffFactory
+    ) {
+        $this->schemaInfoFactory = $schemaInfoFactory;
+        $this->schemaDiffFactory = $schemaDiffFactory;
+
+        parent::__construct();
+    }
 
     protected function configure(): void
     {
@@ -122,12 +136,12 @@ DESC
         $this->initFilters($input);
 
         $dsn1 = $this->parseDsn($input->getArgument('dsn1'));
-        $pdo1 = $this->createPdo($dsn1);
+        $pdo1 = $this->schemaInfoFactory->createPdo($dsn1);
 
         $dsn2 = $this->parseDsn($input->getArgument('dsn2'));
-        $pdo2 = $this->createPdo($dsn2);
+        $pdo2 = $this->schemaInfoFactory->createPdo($dsn2);
 
-        $schemaDiff = new SchemaDiff($output);
+        $schemaDiff = ($this->schemaDiffFactory)($output);
 
         $schema1 = $this->createSchemaInfo($pdo1, $dsn1['D'], $output);
 
@@ -155,7 +169,7 @@ DESC
     private function createSchemaInfo(\PDO $pdo, string $database, OutputInterface $output): SchemaInfo
     {
         $output->writeln("Fetching schema details for database <info>{$database}</info>", Output::VERBOSITY_DEBUG);
-        return SchemaInfoFactory::fromPdo(
+        return $this->schemaInfoFactory->fromPdo(
             $pdo,
             $database,
             function ($tableName) use ($database, $output): bool {
@@ -309,22 +323,5 @@ DESC
         }
 
         return $options;
-    }
-
-    private function createPdo(array $options): \PDO
-    {
-        $host = $options['h'] ?? '';
-        $user = $options['u'] ?? '';
-        $pass = $options['p'] ?? '';
-        $port = $options['P'] ?? 3306;
-
-        $dsn = "mysql:host={$host};port={$port};charset=utf8";
-
-        $options = [
-            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-        ];
-
-        return new \PDO($dsn, $user, $pass, $options);
     }
 }

@@ -20,8 +20,9 @@ class SchemaDiffTest extends SchemaDiffTestCase
             return $testTable === $tableName;
         };
 
-        $schemaInfo1 = SchemaInfoFactory::fromPdo($this->pdo, getenv('DB_DATABASE_1'), $tableFilter);
-        $schemaInfo2 = SchemaInfoFactory::fromPdo($this->pdo, getenv('DB_DATABASE_2'), $tableFilter);
+        $schemaInfoFactory = new SchemaInfoFactory();
+        $schemaInfo1 = $schemaInfoFactory->fromPdo($this->pdo, getenv('DB_DATABASE_1'), $tableFilter);
+        $schemaInfo2 = $schemaInfoFactory->fromPdo($this->pdo, getenv('DB_DATABASE_2'), $tableFilter);
 
         $outputBuffer = new BufferedOutput();
         $schemaDiff = new SchemaDiff($outputBuffer);

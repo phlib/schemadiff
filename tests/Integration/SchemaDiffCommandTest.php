@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Phlib\SchemaDiff\Test\Integration;
 
+use Phlib\SchemaDiff\SchemaDiff;
 use Phlib\SchemaDiff\SchemaDiffCommand;
+use Phlib\SchemaDiff\SchemaInfoFactory;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * @package phlib/schemadiff
  * @group integration
  *
- * @todo This has to be an integration test because SchemaDiffCommand has hardwired dependencies on \PDO and
- *       SchemaInfoFactory, which will instantiate a DB connection.
- *       For now, this is a copy of the tests in Integration\SchemaDiffTest but run through the Command.
- *       Refactoring in future to allow mock dependencies will allow coverage of more features, e.g. ignore-databases
+ * This only runs basic table-centric tests that are handled by `SchemaDiff` as it's relying on a limited test database.
  */
 class SchemaDiffCommandTest extends SchemaDiffTestCase
 {
@@ -29,7 +29,12 @@ class SchemaDiffCommandTest extends SchemaDiffTestCase
 
     protected function setUp(): void
     {
-        $this->command = new SchemaDiffCommand();
+        $this->command = new SchemaDiffCommand(
+            new SchemaInfoFactory(),
+            function (OutputInterface $output): SchemaDiff {
+                return new SchemaDiff($output);
+            },
+        );
 
         $application = new Application();
         $application->add($this->command);
