@@ -14,13 +14,8 @@ use Symfony\Component\Console\Output\BufferedOutput;
  */
 class SchemaDiffTest extends IntegrationTestCase
 {
-    public function testSame(): void
+    private function runDiff(string $tableName, string &$output = null): bool
     {
-        $tableName = $this->generateTableName();
-
-        $this->createTestTable(getenv('DB_DATABASE_1'), $tableName);
-        $this->createTestTable(getenv('DB_DATABASE_2'), $tableName);
-
         $tableFilter = function ($testTable) use ($tableName): bool {
             return $testTable === $tableName;
         };
@@ -32,10 +27,24 @@ class SchemaDiffTest extends IntegrationTestCase
         $schemaDiff = new SchemaDiff($outputBuffer);
 
         $different = $schemaDiff->diff($schemaInfo1, $schemaInfo2);
+
+        $output = $outputBuffer->fetch();
+
+        return $different;
+    }
+
+    public function testSame(): void
+    {
+        $tableName = $this->generateTableName();
+
+        $this->createTestTable(getenv('DB_DATABASE_1'), $tableName);
+        $this->createTestTable(getenv('DB_DATABASE_2'), $tableName);
+
+        $different = $this->runDiff($tableName, $output);
+
         static::assertFalse($different);
 
-        $actual = $outputBuffer->fetch();
-        static::assertEmpty($actual);
+        static::assertEmpty($output);
     }
 
     public function dataSchemaOrder(): array
@@ -55,23 +64,13 @@ class SchemaDiffTest extends IntegrationTestCase
 
         $this->createTestTable(getenv('DB_DATABASE_' . $first), $tableName);
 
-        $tableFilter = function ($testTable) use ($tableName): bool {
-            return $testTable === $tableName;
-        };
+        $different = $this->runDiff($tableName, $output);
 
-        $schemaInfo1 = SchemaInfoFactory::fromPdo($this->pdo, getenv('DB_DATABASE_1'), $tableFilter);
-        $schemaInfo2 = SchemaInfoFactory::fromPdo($this->pdo, getenv('DB_DATABASE_2'), $tableFilter);
-
-        $outputBuffer = new BufferedOutput();
-        $schemaDiff = new SchemaDiff($outputBuffer);
-
-        $different = $schemaDiff->diff($schemaInfo1, $schemaInfo2);
         static::assertTrue($different);
 
         $expected = "Missing table {$tableName} missing on " .
             getenv('DB_DATABASE_' . $second) . "@{$second} exists on " . getenv('DB_DATABASE_' . $first) . "@{$first}";
-        $actual = $outputBuffer->fetch();
-        static::assertStringStartsWith($expected, $actual);
+        static::assertStringStartsWith($expected, $output);
     }
 
     /**
@@ -84,23 +83,13 @@ class SchemaDiffTest extends IntegrationTestCase
         $this->createTestTable(getenv('DB_DATABASE_' . $first), $tableName, true);
         $this->createTestTable(getenv('DB_DATABASE_' . $second), $tableName, false);
 
-        $tableFilter = function ($testTable) use ($tableName): bool {
-            return $testTable === $tableName;
-        };
+        $different = $this->runDiff($tableName, $output);
 
-        $schemaInfo1 = SchemaInfoFactory::fromPdo($this->pdo, getenv('DB_DATABASE_1'), $tableFilter);
-        $schemaInfo2 = SchemaInfoFactory::fromPdo($this->pdo, getenv('DB_DATABASE_2'), $tableFilter);
-
-        $outputBuffer = new BufferedOutput();
-        $schemaDiff = new SchemaDiff($outputBuffer);
-
-        $different = $schemaDiff->diff($schemaInfo1, $schemaInfo2);
         static::assertTrue($different);
 
         $expected = "Missing column {$tableName}.char_col missing on " .
             getenv('DB_DATABASE_' . $second) . "@{$second} exists on " . getenv('DB_DATABASE_' . $first) . "@{$first}";
-        $actual = $outputBuffer->fetch();
-        static::assertStringContainsString($expected, $actual);
+        static::assertStringContainsString($expected, $output);
     }
 
     /**
@@ -113,23 +102,13 @@ class SchemaDiffTest extends IntegrationTestCase
         $this->createTestTable(getenv('DB_DATABASE_' . $first), $tableName, true, true);
         $this->createTestTable(getenv('DB_DATABASE_' . $second), $tableName, true, false);
 
-        $tableFilter = function ($testTable) use ($tableName): bool {
-            return $testTable === $tableName;
-        };
+        $different = $this->runDiff($tableName, $output);
 
-        $schemaInfo1 = SchemaInfoFactory::fromPdo($this->pdo, getenv('DB_DATABASE_1'), $tableFilter);
-        $schemaInfo2 = SchemaInfoFactory::fromPdo($this->pdo, getenv('DB_DATABASE_2'), $tableFilter);
-
-        $outputBuffer = new BufferedOutput();
-        $schemaDiff = new SchemaDiff($outputBuffer);
-
-        $different = $schemaDiff->diff($schemaInfo1, $schemaInfo2);
         static::assertTrue($different);
 
         $expected = "Missing index {$tableName}.idx_char missing on " .
             getenv('DB_DATABASE_' . $second) . "@{$second} exists on " . getenv('DB_DATABASE_' . $first) . "@{$first}";
-        $actual = $outputBuffer->fetch();
-        static::assertStringStartsWith($expected, $actual);
+        static::assertStringStartsWith($expected, $output);
     }
 
     /**
@@ -142,25 +121,15 @@ class SchemaDiffTest extends IntegrationTestCase
         $this->createTestTable(getenv('DB_DATABASE_' . $first), $tableName, true, false, null);
         $this->createTestTable(getenv('DB_DATABASE_' . $second), $tableName, true, false, 'utf8mb4');
 
-        $tableFilter = function ($testTable) use ($tableName): bool {
-            return $testTable === $tableName;
-        };
+        $different = $this->runDiff($tableName, $output);
 
-        $schemaInfo1 = SchemaInfoFactory::fromPdo($this->pdo, getenv('DB_DATABASE_1'), $tableFilter);
-        $schemaInfo2 = SchemaInfoFactory::fromPdo($this->pdo, getenv('DB_DATABASE_2'), $tableFilter);
-
-        $outputBuffer = new BufferedOutput();
-        $schemaDiff = new SchemaDiff($outputBuffer);
-
-        $different = $schemaDiff->diff($schemaInfo1, $schemaInfo2);
         static::assertTrue($different);
 
         $expected = "Column attribute mismatch {$tableName}.char_col attribute character set differs:";
-        $actual = $outputBuffer->fetch();
-        static::assertStringStartsWith($expected, $actual);
+        static::assertStringStartsWith($expected, $output);
 
-        static::assertStringContainsString(getenv('DB_DATABASE_' . $first) . "@{$first}=ascii", $actual);
-        static::assertStringContainsString(getenv('DB_DATABASE_' . $second) . "@{$second}=utf8mb4", $actual);
+        static::assertStringContainsString(getenv('DB_DATABASE_' . $first) . "@{$first}=ascii", $output);
+        static::assertStringContainsString(getenv('DB_DATABASE_' . $second) . "@{$second}=utf8mb4", $output);
     }
 
     /**
@@ -173,24 +142,14 @@ class SchemaDiffTest extends IntegrationTestCase
         $this->createTestTable(getenv('DB_DATABASE_' . $first), $tableName, true, false, null, 'ascii');
         $this->createTestTable(getenv('DB_DATABASE_' . $second), $tableName, true, false, null, 'utf8mb4');
 
-        $tableFilter = function ($testTable) use ($tableName): bool {
-            return $testTable === $tableName;
-        };
+        $different = $this->runDiff($tableName, $output);
 
-        $schemaInfo1 = SchemaInfoFactory::fromPdo($this->pdo, getenv('DB_DATABASE_1'), $tableFilter);
-        $schemaInfo2 = SchemaInfoFactory::fromPdo($this->pdo, getenv('DB_DATABASE_2'), $tableFilter);
-
-        $outputBuffer = new BufferedOutput();
-        $schemaDiff = new SchemaDiff($outputBuffer);
-
-        $different = $schemaDiff->diff($schemaInfo1, $schemaInfo2);
         static::assertTrue($different);
 
         $expected = "Table attribute mismatch {$tableName} attribute collation differs:";
-        $actual = $outputBuffer->fetch();
-        static::assertStringStartsWith($expected, $actual);
+        static::assertStringStartsWith($expected, $output);
 
-        static::assertStringContainsString(getenv('DB_DATABASE_' . $first) . "@{$first}=ascii", $actual);
-        static::assertStringContainsString(getenv('DB_DATABASE_' . $second) . "@{$second}=utf8mb4", $actual);
+        static::assertStringContainsString(getenv('DB_DATABASE_' . $first) . "@{$first}=ascii", $output);
+        static::assertStringContainsString(getenv('DB_DATABASE_' . $second) . "@{$second}=utf8mb4", $output);
     }
 }

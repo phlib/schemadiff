@@ -43,13 +43,8 @@ class SchemaDiffCommandTest extends IntegrationTestCase
         parent::setUp();
     }
 
-    public function testSame(): void
+    private function runDiff(string $tableName, string &$output = null): int
     {
-        $tableName = $this->generateTableName();
-
-        $this->createTestTable(getenv('DB_DATABASE_1'), $tableName);
-        $this->createTestTable(getenv('DB_DATABASE_2'), $tableName);
-
         $this->commandTester->execute([
             '--tables' => $tableName,
             'dsn1' => $this->dsn1,
@@ -57,9 +52,23 @@ class SchemaDiffCommandTest extends IntegrationTestCase
         ]);
 
         $different = $this->commandTester->getStatusCode();
-        static::assertSame(0, $different);
 
         $output = $this->commandTester->getDisplay();
+
+        return $different;
+    }
+
+    public function testSame(): void
+    {
+        $tableName = $this->generateTableName();
+
+        $this->createTestTable(getenv('DB_DATABASE_1'), $tableName);
+        $this->createTestTable(getenv('DB_DATABASE_2'), $tableName);
+
+        $different = $this->runDiff($tableName, $output);
+
+        static::assertSame(0, $different);
+
         static::assertEmpty($output);
     }
 
@@ -80,18 +89,12 @@ class SchemaDiffCommandTest extends IntegrationTestCase
 
         $this->createTestTable(getenv('DB_DATABASE_' . $first), $tableName);
 
-        $this->commandTester->execute([
-            '--tables' => $tableName,
-            'dsn1' => $this->dsn1,
-            'dsn2' => $this->dsn2,
-        ]);
+        $different = $this->runDiff($tableName, $output);
 
-        $different = $this->commandTester->getStatusCode();
         static::assertSame(1, $different);
 
         $expected = "Missing table {$tableName} missing on " .
             getenv('DB_DATABASE_' . $second) . "@{$second} exists on " . getenv('DB_DATABASE_' . $first) . "@{$first}";
-        $output = $this->commandTester->getDisplay();
         static::assertStringStartsWith($expected, $output);
     }
 
@@ -105,18 +108,12 @@ class SchemaDiffCommandTest extends IntegrationTestCase
         $this->createTestTable(getenv('DB_DATABASE_' . $first), $tableName, true);
         $this->createTestTable(getenv('DB_DATABASE_' . $second), $tableName, false);
 
-        $this->commandTester->execute([
-            '--tables' => $tableName,
-            'dsn1' => $this->dsn1,
-            'dsn2' => $this->dsn2,
-        ]);
+        $different = $this->runDiff($tableName, $output);
 
-        $different = $this->commandTester->getStatusCode();
         static::assertSame(1, $different);
 
         $expected = "Missing column {$tableName}.char_col missing on " .
             getenv('DB_DATABASE_' . $second) . "@{$second} exists on " . getenv('DB_DATABASE_' . $first) . "@{$first}";
-        $output = $this->commandTester->getDisplay();
         static::assertStringContainsString($expected, $output);
     }
 
@@ -130,18 +127,12 @@ class SchemaDiffCommandTest extends IntegrationTestCase
         $this->createTestTable(getenv('DB_DATABASE_' . $first), $tableName, true, true);
         $this->createTestTable(getenv('DB_DATABASE_' . $second), $tableName, true, false);
 
-        $this->commandTester->execute([
-            '--tables' => $tableName,
-            'dsn1' => $this->dsn1,
-            'dsn2' => $this->dsn2,
-        ]);
+        $different = $this->runDiff($tableName, $output);
 
-        $different = $this->commandTester->getStatusCode();
         static::assertSame(1, $different);
 
         $expected = "Missing index {$tableName}.idx_char missing on " .
             getenv('DB_DATABASE_' . $second) . "@{$second} exists on " . getenv('DB_DATABASE_' . $first) . "@{$first}";
-        $output = $this->commandTester->getDisplay();
         static::assertStringStartsWith($expected, $output);
     }
 
@@ -155,17 +146,11 @@ class SchemaDiffCommandTest extends IntegrationTestCase
         $this->createTestTable(getenv('DB_DATABASE_' . $first), $tableName, true, false, null);
         $this->createTestTable(getenv('DB_DATABASE_' . $second), $tableName, true, false, 'utf8mb4');
 
-        $this->commandTester->execute([
-            '--tables' => $tableName,
-            'dsn1' => $this->dsn1,
-            'dsn2' => $this->dsn2,
-        ]);
+        $different = $this->runDiff($tableName, $output);
 
-        $different = $this->commandTester->getStatusCode();
         static::assertSame(1, $different);
 
         $expected = "Column attribute mismatch {$tableName}.char_col attribute character set differs:";
-        $output = $this->commandTester->getDisplay();
         static::assertStringStartsWith($expected, $output);
 
         static::assertStringContainsString(getenv('DB_DATABASE_' . $first) . "@{$first}=ascii", $output);
@@ -182,17 +167,11 @@ class SchemaDiffCommandTest extends IntegrationTestCase
         $this->createTestTable(getenv('DB_DATABASE_' . $first), $tableName, true, false, null, 'ascii');
         $this->createTestTable(getenv('DB_DATABASE_' . $second), $tableName, true, false, null, 'utf8mb4');
 
-        $this->commandTester->execute([
-            '--tables' => $tableName,
-            'dsn1' => $this->dsn1,
-            'dsn2' => $this->dsn2,
-        ]);
+        $different = $this->runDiff($tableName, $output);
 
-        $different = $this->commandTester->getStatusCode();
         static::assertSame(1, $different);
 
         $expected = "Table attribute mismatch {$tableName} attribute collation differs:";
-        $output = $this->commandTester->getDisplay();
         static::assertStringStartsWith($expected, $output);
 
         static::assertStringContainsString(getenv('DB_DATABASE_' . $first) . "@{$first}=ascii", $output);
