@@ -9,7 +9,24 @@ namespace Phlib\SchemaDiff;
  */
 class SchemaInfoFactory
 {
-    public static function fromPdo(\PDO $connection, string $schemaName, callable $tableFilter = null): SchemaInfo
+    public function createPdo(array $options): \PDO
+    {
+        $host = $options['h'] ?? '';
+        $user = $options['u'] ?? '';
+        $pass = $options['p'] ?? '';
+        $port = $options['P'] ?? 3306;
+
+        $dsn = "mysql:host={$host};port={$port};charset=utf8";
+
+        $options = [
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+        ];
+
+        return new \PDO($dsn, $user, $pass, $options);
+    }
+
+    public function fromPdo(\PDO $connection, string $schemaName, callable $tableFilter = null): SchemaInfo
     {
         $sql = <<<SQL
 SELECT

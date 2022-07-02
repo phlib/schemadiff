@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+
 declare(strict_types=1);
 
 // autoload
@@ -11,11 +12,23 @@ foreach ($autoloadFiles as $autoloadFile) {
     }
 }
 
+use Phlib\SchemaDiff\SchemaDiff;
+use Phlib\SchemaDiff\SchemaDiffCommand;
+use Phlib\SchemaDiff\SchemaInfoFactory;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Output\OutputInterface;
 
 $app = new Application();
 $app->setName('Schema Diff');
+// @todo version
 $app->setVersion('1.2.0');
-$app->add(new \Phlib\SchemaDiff\SchemaDiffCommand());
+
+$app->add(new SchemaDiffCommand(
+    new SchemaInfoFactory(),
+    function (OutputInterface $output): SchemaDiff {
+        return new SchemaDiff($output);
+    },
+));
+
 $app->setDefaultCommand('schemadiff', true);
 $app->run();

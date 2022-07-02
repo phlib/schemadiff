@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - Type declarations have been added to all parameters and return types.
+- Throw exception if required source schema is not set.
+### Changed
+- `SchemaInfoFactory::fromPdo()` is no longer static. This was used statically in
+  the command class, which prevented dependency injection for unit tests.
+- `SchemaDiffCommand` requires dependencies when constructed. This should have
+  no impact on standard usage of this package.
 ### Removed
 - **BC break**: Removed support for PHP versions <= v7.3 as they are no longer
   [actively supported](https://php.net/supported-versions.php) by the PHP project.
