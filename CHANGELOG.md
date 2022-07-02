@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
+- Add support for PHP v8
 - Type declarations have been added to all parameters and return types.
 - Throw exception if required source schema is not set.
 ### Changed

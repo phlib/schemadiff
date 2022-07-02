@@ -276,11 +276,11 @@ SQL;
             ],
             [
                 'with' => [$this->columnsSql],
-                'return' => null,
+                'return' => false,
             ],
             [
                 'with' => [$this->indexSql],
-                'return' => null,
+                'return' => false,
             ],
         ];
 
