@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
 - Type declarations have been added to all parameters and return types.
+- Throw exception if required source schema is not set.
 ### Changed
 - `SchemaInfoFactory::fromPdo()` is no longer static. This was used statically in
   the command class, which prevented dependency injection for unit tests.

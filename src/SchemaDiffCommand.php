@@ -143,6 +143,9 @@ DESC
 
         $schemaDiff = ($this->schemaDiffFactory)($output);
 
+        if (!isset($dsn1['D'])) {
+            throw new \InvalidArgumentException('DSN 1 missing database (D)');
+        }
         $schema1 = $this->createSchemaInfo($pdo1, $dsn1['D'], $output);
 
         if (isset($dsn2['D'])) {
