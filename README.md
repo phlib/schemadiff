@@ -1,6 +1,6 @@
 # phlib/schemadiff
 
-[![Code Checks](https://img.shields.io/github/workflow/status/phlib/schemadiff/CodeChecks?logo=github)](https://github.com/phlib/schemadiff/actions/workflows/code-checks.yml)
+[![Code Checks](https://img.shields.io/github/actions/workflow/status/phlib/schemadiff/code-checks.yml?logo=github)](https://github.com/phlib/schemadiff/actions/workflows/code-checks.yml)
 [![Codecov](https://img.shields.io/codecov/c/github/phlib/schemadiff.svg?logo=codecov)](https://codecov.io/gh/phlib/schemadiff)
 [![Latest Stable Version](https://img.shields.io/packagist/v/phlib/schemadiff.svg?logo=packagist)](https://packagist.org/packages/phlib/schemadiff)
 [![Total Downloads](https://img.shields.io/packagist/dt/phlib/schemadiff.svg?logo=packagist)](https://packagist.org/packages/phlib/schemadiff)
