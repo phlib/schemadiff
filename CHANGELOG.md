@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+- Allow Symfony v6 dependencies
 
 ## [2.0.0] - 2022-07-02
 ### Added
