@@ -616,7 +616,7 @@ class SchemaDiffCommandTest extends TestCase
             [$pdo1, $database1, $tableFilterConstraint],
         ];
         $output = [
-            "Fetching schema details for database {$database1}"
+            "Fetching schema details for database {$database1}",
         ];
 
         foreach ($databases as $database2) {

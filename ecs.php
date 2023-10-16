@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Symplify\EasyCodingStandard\Config\ECSConfig;
-use Symplify\EasyCodingStandard\ValueObject\Option;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 
 return static function (ECSConfig $ecsConfig): void {
@@ -26,4 +25,12 @@ return static function (ECSConfig $ecsConfig): void {
         \PhpCsFixer\Fixer\Operator\NotOperatorWithSuccessorSpaceFixer::class,
         \PhpCsFixer\Fixer\CastNotation\CastSpacesFixer::class,
     ]);
+
+    // PER Coding Style 7.1: "The `fn` keyword MUST NOT be succeeded by a space."
+    $ecsConfig->ruleWithConfiguration(
+        \PhpCsFixer\Fixer\FunctionNotation\FunctionDeclarationFixer::class,
+        [
+            'closure_fn_spacing' => 'none',
+        ]
+    );
 };
