@@ -38,5 +38,11 @@
             "Phlib\\SchemaDiff\\Test\\": "tests"
         }
     },
-    "bin": ["bin/schemadiff"]
+    "bin": [
+        "bin/schemadiff"
+    ],
+    "scripts": {
+        "check-cs": "vendor/bin/ecs check --ansi",
+        "fix-cs": "vendor/bin/ecs check --fix --ansi"
+    }
 }
