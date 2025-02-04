@@ -76,8 +76,7 @@ class SchemaDiffTest extends TestCase
 
         $formatter->expects(static::exactly(count($expectedStyles)))
             ->method('setStyle')
-            ->withConsecutive(...$expectedStyles)
-            ->willReturn(true);
+            ->withConsecutive(...$expectedStyles);
 
         $output = $this->createMock(OutputInterface::class);
         $output->expects(static::once())
