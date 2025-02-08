@@ -130,7 +130,7 @@ class SchemaDiffCommandTest extends TestCase
             [
                 $schemaInfo1,
                 $schemaInfo2,
-            ]
+            ],
         );
 
         $this->schemaDiff->expects(static::once())
@@ -151,7 +151,7 @@ class SchemaDiffCommandTest extends TestCase
         $output = $this->commandTester->getDisplay();
         static::assertSame(
             implode("\n", $expectedOutput) . "\n",
-            $output
+            $output,
         );
     }
 
@@ -203,7 +203,7 @@ class SchemaDiffCommandTest extends TestCase
                 $schemaInfo1,
                 $schemaInfo2,
                 $schemaInfo3,
-            ]
+            ],
         );
 
         $this->schemaDiff->expects(static::exactly(2))
@@ -227,7 +227,7 @@ class SchemaDiffCommandTest extends TestCase
         $output = $this->commandTester->getDisplay();
         static::assertSame(
             implode("\n", $expectedOutput) . "\n",
-            $output
+            $output,
         );
     }
 
@@ -286,7 +286,7 @@ class SchemaDiffCommandTest extends TestCase
                 $schemaInfo1,
                 $schemaInfo2,
                 $schemaInfo3,
-            ]
+            ],
         );
 
         // Add message for skipped database
@@ -313,7 +313,7 @@ class SchemaDiffCommandTest extends TestCase
         $output = $this->commandTester->getDisplay();
         static::assertSame(
             implode("\n", $expectedOutput) . "\n",
-            $output
+            $output,
         );
     }
 
@@ -401,7 +401,7 @@ class SchemaDiffCommandTest extends TestCase
                 $schemaInfo1,
                 $schemaInfo2,
                 $schemaInfo3,
-            ]
+            ],
         );
 
         // Add message for ignored databases
@@ -458,7 +458,7 @@ class SchemaDiffCommandTest extends TestCase
         $output = $this->commandTester->getDisplay();
         static::assertSame(
             implode("\n", $expectedOutput) . "\n",
-            $output
+            $output,
         );
     }
 
@@ -508,7 +508,7 @@ class SchemaDiffCommandTest extends TestCase
                 $schemaInfo1,
                 $schemaInfo2,
             ],
-            $tables
+            $tables,
         );
 
         // Add message for ignored databases
@@ -566,7 +566,7 @@ class SchemaDiffCommandTest extends TestCase
         $output = $this->commandTester->getDisplay();
         static::assertSame(
             implode("\n", $expectedOutput) . "\n",
-            $output
+            $output,
         );
     }
 
@@ -600,7 +600,7 @@ class SchemaDiffCommandTest extends TestCase
         string $database1,
         array $databases,
         array $schemaInfos,
-        array $tables = null
+        array $tables = null,
     ): array {
         $tableFilterConstraint = static::isInstanceOf(\Closure::class);
         if (is_array($tables)) {

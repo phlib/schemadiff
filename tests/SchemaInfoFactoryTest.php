@@ -216,15 +216,15 @@ SQL;
         // - tableData
         static::assertSame(
             $this->tableData[$this->tableName]['TABLE_INFO'],
-            $schemaInfo->getTableInfo($this->tableName)
+            $schemaInfo->getTableInfo($this->tableName),
         );
         static::assertSame(
             $this->tableData[$this->tableName]['INDEXES']['PRIMARY'],
-            $schemaInfo->getIndexInfo($this->tableName, 'PRIMARY')
+            $schemaInfo->getIndexInfo($this->tableName, 'PRIMARY'),
         );
         static::assertSame(
             $this->tableData[$this->tableName]['COLUMNS']['test_id'],
-            $schemaInfo->getColumnInfo($this->tableName, 'test_id')
+            $schemaInfo->getColumnInfo($this->tableName, 'test_id'),
         );
     }
 

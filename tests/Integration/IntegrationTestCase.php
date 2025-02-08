@@ -32,7 +32,7 @@ abstract class IntegrationTestCase extends TestCase
                 \PDO::ATTR_TIMEOUT => 2,
                 \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
                 \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-            ]
+            ],
         );
     }
 
@@ -56,7 +56,7 @@ abstract class IntegrationTestCase extends TestCase
         bool $charCol = true,
         bool $charIdx = false,
         string $colCharset = null,
-        string $tableCharset = 'ascii'
+        string $tableCharset = 'ascii',
     ) {
         $schemaTableQuoted = '`' . $schemaName . "`.`{$tableName}`";
 

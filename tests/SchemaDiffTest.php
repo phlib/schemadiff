@@ -52,14 +52,14 @@ class SchemaDiffTest extends TestCase
                 ['table'],
                 ['column'],
                 ['index'],
-                ['attribute']
+                ['attribute'],
             )
             ->willReturnOnConsecutiveCalls(
                 (bool)$hasStyles[0],
                 (bool)$hasStyles[1],
                 (bool)$hasStyles[2],
                 (bool)$hasStyles[3],
-                (bool)$hasStyles[4]
+                (bool)$hasStyles[4],
             );
 
         $newStyles = [

@@ -38,7 +38,7 @@ class SchemaDiffCommand extends Command
 
     public function __construct(
         SchemaInfoFactory $schemaInfoFactory,
-        \Closure $schemaDiffFactory
+        \Closure $schemaDiffFactory,
     ) {
         $this->schemaInfoFactory = $schemaInfoFactory;
         $this->schemaDiffFactory = $schemaDiffFactory;
@@ -65,69 +65,69 @@ DESC
         $this->addArgument(
             'dsn1',
             InputArgument::REQUIRED,
-            'DSN to first schema, needs to contain the main database'
+            'DSN to first schema, needs to contain the main database',
         );
 
         $this->addArgument(
             'dsn2',
             InputArgument::REQUIRED,
-            'DSN to second schema, if it contains a database that will be used, otherwise uses the filter options'
+            'DSN to second schema, if it contains a database that will be used, otherwise uses the filter options',
         );
 
         $this->addOption(
             'ignore-databases',
             null,
             InputOption::VALUE_REQUIRED,
-            'Ignore this comma-separated list of databases'
+            'Ignore this comma-separated list of databases',
         );
 
         $this->addOption(
             'ignore-databases-regex',
             null,
             InputOption::VALUE_REQUIRED,
-            'Ignore databases whose names match this regex'
+            'Ignore databases whose names match this regex',
         );
 
         $this->addOption(
             'databases',
             null,
             InputOption::VALUE_REQUIRED,
-            'Only compare this comma-separated list of databases'
+            'Only compare this comma-separated list of databases',
         );
 
         $this->addOption(
             'databases-regex',
             null,
             InputOption::VALUE_REQUIRED,
-            'Only compare databases whose names match this regex'
+            'Only compare databases whose names match this regex',
         );
 
         $this->addOption(
             'ignore-tables',
             null,
             InputOption::VALUE_REQUIRED,
-            'Ignore this comma-separated list of tables. Table names may be qualified with the database name'
+            'Ignore this comma-separated list of tables. Table names may be qualified with the database name',
         );
 
         $this->addOption(
             'ignore-tables-regex',
             null,
             InputOption::VALUE_REQUIRED,
-            'Ignore tables whose names match the regex'
+            'Ignore tables whose names match the regex',
         );
 
         $this->addOption(
             'tables',
             null,
             InputOption::VALUE_REQUIRED,
-            'Compare only this comma-separated list of tables. Table names may be qualified with the database name'
+            'Compare only this comma-separated list of tables. Table names may be qualified with the database name',
         );
 
         $this->addOption(
             'tables-regex',
             null,
             InputOption::VALUE_REQUIRED,
-            'Compare only tables whose names match this regex'
+            'Compare only tables whose names match this regex',
         );
     }
 
@@ -177,7 +177,7 @@ DESC
             $database,
             function ($tableName) use ($database, $output): bool {
                 return $this->isTableAllowed($database, $tableName, $output);
-            }
+            },
         );
     }
 

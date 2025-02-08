@@ -51,8 +51,8 @@ class SchemaDiff
         $tables = array_unique(
             array_merge(
                 $schema1->getTables(),
-                $schema2->getTables()
-            )
+                $schema2->getTables(),
+            ),
         );
 
         $msg = '<error>Missing table</error> <table>%s</table> missing on <schema>%s</schema> exists on <schema>%s</schema>';
@@ -63,7 +63,7 @@ class SchemaDiff
                     $msg,
                     $tableName,
                     $schema1->getName() . '@1',
-                    $schema2->getName() . '@2'
+                    $schema2->getName() . '@2',
                 ));
 
                 continue;
@@ -74,7 +74,7 @@ class SchemaDiff
                     $msg,
                     $tableName,
                     $schema2->getName() . '@2',
-                    $schema1->getName() . '@1'
+                    $schema1->getName() . '@1',
                 ));
 
                 continue;
@@ -150,8 +150,8 @@ class SchemaDiff
                         $tableName,
                         $columnName,
                         $schema1->getName() . '@1',
-                        $schema2->getName() . '@2'
-                    )
+                        $schema2->getName() . '@2',
+                    ),
                 );
 
                 continue;
@@ -165,8 +165,8 @@ class SchemaDiff
                         $tableName,
                         $columnName,
                         $schema2->getName() . '@2',
-                        $schema1->getName() . '@1'
-                    )
+                        $schema1->getName() . '@1',
+                    ),
                 );
 
                 continue;
@@ -216,7 +216,7 @@ class SchemaDiff
                     $tableName,
                     $indexName,
                     $schema1->getName() . '@1',
-                    $schema2->getName() . '@2'
+                    $schema2->getName() . '@2',
                 ));
 
                 continue;
@@ -229,7 +229,7 @@ class SchemaDiff
                     $tableName,
                     $indexName,
                     $schema2->getName() . '@2',
-                    $schema1->getName() . '@1'
+                    $schema1->getName() . '@1',
                 ));
 
                 continue;
