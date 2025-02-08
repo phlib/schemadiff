@@ -6,10 +6,12 @@ namespace Phlib\SchemaDiff\Test;
 
 use Phlib\SchemaDiff\SchemaDiff;
 use Phlib\SchemaDiff\SchemaInfo;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
+use Symfony\Component\Console\Formatter\OutputFormatterStyleInterface as StyleInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -38,29 +40,20 @@ class SchemaDiffTest extends TestCase
 
     private string $schema2Name;
 
-    /**
-     * @dataProvider dataFormatterAddStyles
-     */
+    #[DataProvider('dataFormatterAddStyles')]
     public function testFormatterAddStyles(array $hasStyles): void
     {
         $formatter = $this->createMock(OutputFormatter::class);
 
         $formatter->expects(static::exactly(5))
             ->method('hasStyle')
-            ->withConsecutive(
-                ['schema'],
-                ['table'],
-                ['column'],
-                ['index'],
-                ['attribute'],
-            )
-            ->willReturnOnConsecutiveCalls(
-                (bool)$hasStyles[0],
-                (bool)$hasStyles[1],
-                (bool)$hasStyles[2],
-                (bool)$hasStyles[3],
-                (bool)$hasStyles[4],
-            );
+            ->willReturnMap([
+                ['schema', (bool)$hasStyles[0]],
+                ['table', (bool)$hasStyles[1]],
+                ['column', (bool)$hasStyles[2]],
+                ['index', (bool)$hasStyles[3]],
+                ['attribute', (bool)$hasStyles[4]],
+            ]);
 
         $newStyles = [
             ['schema', new OutputFormatterStyle('green')],
@@ -70,13 +63,27 @@ class SchemaDiffTest extends TestCase
             ['attribute', new OutputFormatterStyle('yellow')],
         ];
 
-        $expectedStyles = array_filter($newStyles, function ($idx) use ($hasStyles): bool {
-            return !$hasStyles[$idx];
-        }, ARRAY_FILTER_USE_KEY);
+        $expectedStyles = array_values(array_filter(
+            $newStyles,
+            fn(int $idx): bool => !$hasStyles[$idx],
+            ARRAY_FILTER_USE_KEY,
+        ));
 
-        $formatter->expects(static::exactly(count($expectedStyles)))
+        $matcher = static::exactly(count($expectedStyles));
+        $formatter->expects($matcher)
             ->method('setStyle')
-            ->withConsecutive(...$expectedStyles);
+            ->with(
+                static::callback(function (string $actualName) use ($matcher, $expectedStyles): bool {
+                    $expected = $expectedStyles[$matcher->numberOfInvocations() - 1];
+                    static::assertSame($expected[0], $actualName);
+                    return true;
+                }),
+                static::callback(function (StyleInterface $actualStyle) use ($matcher, $expectedStyles): bool {
+                    $expected = $expectedStyles[$matcher->numberOfInvocations() - 1];
+                    static::assertEquals($expected[1], $actualStyle);
+                    return true;
+                }),
+            );
 
         $output = $this->createMock(OutputInterface::class);
         $output->expects(static::once())
@@ -86,7 +93,7 @@ class SchemaDiffTest extends TestCase
         new SchemaDiff($output);
     }
 
-    public function dataFormatterAddStyles(): array
+    public static function dataFormatterAddStyles(): array
     {
         $styleCount = 5;
         $totalCombos = 2 ** $styleCount;
@@ -132,9 +139,7 @@ class SchemaDiffTest extends TestCase
         static::assertTrue($hasDiff);
     }
 
-    /**
-     * @dataProvider dataSchemaOrder
-     */
+    #[DataProvider('dataSchemaOrder')]
     public function testDiffHasTable(int $order1, int $order2): void
     {
         $this->initDiff();
@@ -215,9 +220,7 @@ class SchemaDiffTest extends TestCase
         static::assertTrue($hasDiff);
     }
 
-    /**
-     * @dataProvider dataSchemaOrder
-     */
+    #[DataProvider('dataSchemaOrder')]
     public function testDiffCompareColumns(int $order1, int $order2): void
     {
         $this->initDiff();
@@ -305,9 +308,7 @@ class SchemaDiffTest extends TestCase
         static::assertTrue($hasDiff);
     }
 
-    /**
-     * @dataProvider dataSchemaOrder
-     */
+    #[DataProvider('dataSchemaOrder')]
     public function testDiffCompareIndexes(int $order1, int $order2): void
     {
         $this->initDiff();
@@ -497,7 +498,7 @@ class SchemaDiffTest extends TestCase
         return $indexName;
     }
 
-    public function dataSchemaOrder(): array
+    public static function dataSchemaOrder(): array
     {
         return [
             'one-two' => [1, 2],

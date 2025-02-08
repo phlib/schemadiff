@@ -7,16 +7,17 @@ namespace Phlib\SchemaDiff\Test\Integration;
 use Phlib\SchemaDiff\SchemaDiff;
 use Phlib\SchemaDiff\SchemaDiffCommand;
 use Phlib\SchemaDiff\SchemaInfoFactory;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * @package phlib/schemadiff
- * @group integration
  *
  * This only runs basic table-centric tests that are handled by `SchemaDiff` as it's relying on a limited test database.
  */
+#[Group('integration')]
 class SchemaDiffCommandTest extends SchemaDiffTestCase
 {
     private SchemaDiffCommand $command;

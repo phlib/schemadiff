@@ -179,29 +179,14 @@ SQL;
             ->with(\PDO::FETCH_GROUP | \PDO::FETCH_ASSOC)
             ->willReturn($indexData);
 
-        $statementMap = [
-            [
-                'with' => [$this->schemaSql],
-                'return' => $this->schemaStmt,
-            ],
-            [
-                'with' => [$this->tablesSql],
-                'return' => $tablesStmt,
-            ],
-            [
-                'with' => [$this->columnsSql],
-                'return' => $columnsStmt,
-            ],
-            [
-                'with' => [$this->indexSql],
-                'return' => $indexStmt,
-            ],
-        ];
-
-        $this->pdo->expects(static::exactly(count($statementMap)))
+        $this->pdo->expects(static::exactly(4))
             ->method('prepare')
-            ->withConsecutive(...array_column($statementMap, 'with'))
-            ->willReturnOnConsecutiveCalls(...array_column($statementMap, 'return'));
+            ->willReturnMap([
+                [$this->schemaSql, [], $this->schemaStmt],
+                [$this->tablesSql, [], $tablesStmt],
+                [$this->columnsSql, [], $columnsStmt],
+                [$this->indexSql, [], $indexStmt],
+            ]);
 
         // Use the Factory to create the SchemaInfo
         $schemaInfo = (new SchemaInfoFactory())->fromPdo($this->pdo, $this->schemaName);
@@ -265,29 +250,14 @@ SQL;
             ->with(\PDO::FETCH_ASSOC)
             ->willReturn($tablesData);
 
-        $statementMap = [
-            [
-                'with' => [$this->schemaSql],
-                'return' => $this->schemaStmt,
-            ],
-            [
-                'with' => [$this->tablesSql],
-                'return' => $tablesStmt,
-            ],
-            [
-                'with' => [$this->columnsSql],
-                'return' => false,
-            ],
-            [
-                'with' => [$this->indexSql],
-                'return' => false,
-            ],
-        ];
-
-        $this->pdo->expects(static::exactly(count($statementMap)))
+        $this->pdo->expects(static::exactly(4))
             ->method('prepare')
-            ->withConsecutive(...array_column($statementMap, 'with'))
-            ->willReturnOnConsecutiveCalls(...array_column($statementMap, 'return'));
+            ->willReturnMap([
+                [$this->schemaSql, [], $this->schemaStmt],
+                [$this->tablesSql, [], $tablesStmt],
+                [$this->columnsSql, [], false],
+                [$this->indexSql, [], false],
+            ]);
 
         // Use the Factory to create the SchemaInfo
         $tableFilter = function (): bool {

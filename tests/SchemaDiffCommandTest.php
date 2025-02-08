@@ -8,6 +8,7 @@ use Phlib\SchemaDiff\SchemaDiff;
 use Phlib\SchemaDiff\SchemaDiffCommand;
 use Phlib\SchemaDiff\SchemaInfo;
 use Phlib\SchemaDiff\SchemaInfoFactory;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
@@ -53,9 +54,7 @@ class SchemaDiffCommandTest extends TestCase
         parent::setUp();
     }
 
-    /**
-     * @dataProvider dataDsnInvalid
-     */
+    #[DataProvider('dataDsnInvalid')]
     public function testDsnInvalid(string $dsn1, string $dsn2): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -67,9 +66,9 @@ class SchemaDiffCommandTest extends TestCase
         ]);
     }
 
-    public function dataDsnInvalid(): iterable
+    public static function dataDsnInvalid(): iterable
     {
-        $validDsn = $this->createDsn(true);
+        $validDsn = static::createDsn(true);
 
         $invalidDsn = $validDsn['string'] . ',' . sha1(uniqid()) . '=' . sha1(uniqid());
 
@@ -84,15 +83,15 @@ class SchemaDiffCommandTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('DSN 1 missing database (D)');
 
-        $dsn1 = $this->createDsn(false);
-        $dsn2 = $this->createDsn(true);
+        $dsn1 = static::createDsn(false);
+        $dsn2 = static::createDsn(true);
 
         $this->schemaInfoFactory->expects(static::exactly(2))
             ->method('createPdo')
-            ->withConsecutive(
-                [$dsn1['parts']],
-                [$dsn2['parts']],
-            );
+            ->willReturnMap([
+                [$dsn1['parts'], $this->createStub(\PDO::class)],
+                [$dsn2['parts'], $this->createStub(\PDO::class)],
+            ]);
 
         $this->commandTester->execute([
             'dsn1' => $dsn1['string'],
@@ -105,19 +104,15 @@ class SchemaDiffCommandTest extends TestCase
         $pdo1 = $this->createMock(\PDO::class);
         $pdo2 = $this->createMock(\PDO::class);
 
-        $dsn1 = $this->createDsn(true);
-        $dsn2 = $this->createDsn(true);
+        $dsn1 = static::createDsn(true);
+        $dsn2 = static::createDsn(true);
 
         $this->schemaInfoFactory->expects(static::exactly(2))
             ->method('createPdo')
-            ->withConsecutive(
-                [$dsn1['parts']],
-                [$dsn2['parts']],
-            )
-            ->willReturnOnConsecutiveCalls(
-                $pdo1,
-                $pdo2,
-            );
+            ->willReturnMap([
+                [$dsn1['parts'], $pdo1],
+                [$dsn2['parts'], $pdo2],
+            ]);
 
         $schemaInfo1 = $this->createMock(SchemaInfo::class);
         $schemaInfo2 = $this->createMock(SchemaInfo::class);
@@ -160,19 +155,15 @@ class SchemaDiffCommandTest extends TestCase
         $pdo1 = $this->createMock(\PDO::class);
         $pdo2 = $this->createMock(\PDO::class);
 
-        $dsn1 = $this->createDsn(true);
-        $dsn2 = $this->createDsn(false);
+        $dsn1 = static::createDsn(true);
+        $dsn2 = static::createDsn(false);
 
         $this->schemaInfoFactory->expects(static::exactly(2))
             ->method('createPdo')
-            ->withConsecutive(
-                [$dsn1['parts']],
-                [$dsn2['parts']],
-            )
-            ->willReturnOnConsecutiveCalls(
-                $pdo1,
-                $pdo2,
-            );
+            ->willReturnMap([
+                [$dsn1['parts'], $pdo1],
+                [$dsn2['parts'], $pdo2],
+            ]);
 
         $databases = [
             sha1(uniqid('one')),
@@ -208,11 +199,10 @@ class SchemaDiffCommandTest extends TestCase
 
         $this->schemaDiff->expects(static::exactly(2))
             ->method('diff')
-            ->withConsecutive(
-                [$schemaInfo1, $schemaInfo2],
-                [$schemaInfo1, $schemaInfo3],
-            )
-            ->willReturn(false);
+            ->willReturnMap([
+                [$schemaInfo1, $schemaInfo2, false],
+                [$schemaInfo1, $schemaInfo3, false],
+            ]);
 
         $this->commandTester->execute([
             'dsn1' => $dsn1['string'],
@@ -231,27 +221,21 @@ class SchemaDiffCommandTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider dataMultipleDbIgnoreSystem
-     */
+    #[DataProvider('dataMultipleDbIgnoreSystem')]
     public function testMultipleDbIgnoreSystem(string $systemDatabase): void
     {
         $pdo1 = $this->createMock(\PDO::class);
         $pdo2 = $this->createMock(\PDO::class);
 
-        $dsn1 = $this->createDsn(true);
-        $dsn2 = $this->createDsn(false);
+        $dsn1 = static::createDsn(true);
+        $dsn2 = static::createDsn(false);
 
         $this->schemaInfoFactory->expects(static::exactly(2))
             ->method('createPdo')
-            ->withConsecutive(
-                [$dsn1['parts']],
-                [$dsn2['parts']],
-            )
-            ->willReturnOnConsecutiveCalls(
-                $pdo1,
-                $pdo2,
-            );
+            ->willReturnMap([
+                [$dsn1['parts'], $pdo1],
+                [$dsn2['parts'], $pdo2],
+            ]);
 
         $databases = [
             sha1(uniqid('one')),
@@ -294,11 +278,10 @@ class SchemaDiffCommandTest extends TestCase
 
         $this->schemaDiff->expects(static::exactly(2))
             ->method('diff')
-            ->withConsecutive(
-                [$schemaInfo1, $schemaInfo2],
-                [$schemaInfo1, $schemaInfo3],
-            )
-            ->willReturn(false);
+            ->willReturnMap([
+                [$schemaInfo1, $schemaInfo2, false],
+                [$schemaInfo1, $schemaInfo3, false],
+            ]);
 
         $this->commandTester->execute([
             'dsn1' => $dsn1['string'],
@@ -317,7 +300,7 @@ class SchemaDiffCommandTest extends TestCase
         );
     }
 
-    public function dataMultipleDbIgnoreSystem(): array
+    public static function dataMultipleDbIgnoreSystem(): array
     {
         return [
             'mysql' => ['mysql'],
@@ -330,7 +313,7 @@ class SchemaDiffCommandTest extends TestCase
         ];
     }
 
-    public function dataAllowIgnoreRegex(): array
+    public static function dataAllowIgnoreRegex(): array
     {
         return [
             'ignore-plain' => ['ignore-plain'],
@@ -340,16 +323,14 @@ class SchemaDiffCommandTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataAllowIgnoreRegex
-     */
+    #[DataProvider('dataAllowIgnoreRegex')]
     public function testMultipleDbIgnoreDatabases(string $allowIgnoreRegex): void
     {
         $pdo1 = $this->createMock(\PDO::class);
         $pdo2 = $this->createMock(\PDO::class);
 
-        $dsn1 = $this->createDsn(true);
-        $dsn2 = $this->createDsn(false);
+        $dsn1 = static::createDsn(true);
+        $dsn2 = static::createDsn(false);
 
         $ignore1 = 'ignore-' . sha1(uniqid('one'));
         $ignore2 = 'ignore-' . sha1(uniqid('two'));
@@ -358,14 +339,10 @@ class SchemaDiffCommandTest extends TestCase
 
         $this->schemaInfoFactory->expects(static::exactly(2))
             ->method('createPdo')
-            ->withConsecutive(
-                [$dsn1['parts']],
-                [$dsn2['parts']],
-            )
-            ->willReturnOnConsecutiveCalls(
-                $pdo1,
-                $pdo2,
-            );
+            ->willReturnMap([
+                [$dsn1['parts'], $pdo1],
+                [$dsn2['parts'], $pdo2],
+            ]);
 
         $databases = [
             $ignore1,
@@ -424,11 +401,10 @@ class SchemaDiffCommandTest extends TestCase
 
         $this->schemaDiff->expects(static::exactly(2))
             ->method('diff')
-            ->withConsecutive(
-                [$schemaInfo1, $schemaInfo2],
-                [$schemaInfo1, $schemaInfo3],
-            )
-            ->willReturn(false);
+            ->willReturnMap([
+                [$schemaInfo1, $schemaInfo2, false],
+                [$schemaInfo1, $schemaInfo3, false],
+            ]);
 
         $input = [
             'dsn1' => $dsn1['string'],
@@ -462,16 +438,14 @@ class SchemaDiffCommandTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider dataAllowIgnoreRegex
-     */
+    #[DataProvider('dataAllowIgnoreRegex')]
     public function testTwoDbIgnoreTables(string $allowIgnoreRegex): void
     {
         $pdo1 = $this->createMock(\PDO::class);
         $pdo2 = $this->createMock(\PDO::class);
 
-        $dsn1 = $this->createDsn(true);
-        $dsn2 = $this->createDsn(true);
+        $dsn1 = static::createDsn(true);
+        $dsn2 = static::createDsn(true);
 
         $ignore1 = 'ignore-' . sha1(uniqid('one'));
         $ignore2 = 'ignore-' . sha1(uniqid('two'));
@@ -480,14 +454,10 @@ class SchemaDiffCommandTest extends TestCase
 
         $this->schemaInfoFactory->expects(static::exactly(2))
             ->method('createPdo')
-            ->withConsecutive(
-                [$dsn1['parts']],
-                [$dsn2['parts']],
-            )
-            ->willReturnOnConsecutiveCalls(
-                $pdo1,
-                $pdo2,
-            );
+            ->willReturnMap([
+                [$dsn1['parts'], $pdo1],
+                [$dsn2['parts'], $pdo2],
+            ]);
 
         $schemaInfo1 = $this->createMock(SchemaInfo::class);
         $schemaInfo2 = $this->createMock(SchemaInfo::class);
@@ -533,9 +503,7 @@ class SchemaDiffCommandTest extends TestCase
 
         $this->schemaDiff->expects(static::once())
             ->method('diff')
-            ->withConsecutive(
-                [$schemaInfo1, $schemaInfo2],
-            )
+            ->with($schemaInfo1, $schemaInfo2)
             ->willReturn(false);
 
         $input = [
@@ -570,11 +538,11 @@ class SchemaDiffCommandTest extends TestCase
         );
     }
 
-    private function createDsn(bool $withDatabase = false): array
+    private static function createDsn(bool $withDatabase = false): array
     {
         $dsnParts = [
             'h' => sha1(uniqid('host')),
-            'P' => rand(3000, 9000),
+            'P' => (string)rand(3000, 9000),
             'u' => sha1(uniqid('username')),
             'p' => sha1(uniqid('password')),
         ];
@@ -624,10 +592,30 @@ class SchemaDiffCommandTest extends TestCase
             $output[] = "Fetching schema details for database {$database2}";
         }
 
-        $this->schemaInfoFactory->expects(static::exactly(count($schemaInfos)))
+        $matcher = static::exactly(count($schemaInfos));
+        $this->schemaInfoFactory->expects($matcher)
             ->method('fromPdo')
-            ->withConsecutive(...$arguments)
-            ->willReturnOnConsecutiveCalls(...$schemaInfos);
+            ->willReturnCallback(function (
+                \PDO $actualConnection,
+                string $actualSchemaName,
+                callable $actualTableFilter = null,
+            ) use (
+                $matcher,
+                $arguments,
+                $schemaInfos
+            ): SchemaInfo {
+                [
+                    $expectedPdo,
+                    $expectedDatabase,
+                    $tableFilterConstraint,
+                ] = $arguments[$matcher->numberOfInvocations() - 1];
+
+                static::assertSame($expectedPdo, $actualConnection);
+                static::assertSame($expectedDatabase, $actualSchemaName);
+                static::assertThat($actualTableFilter, $tableFilterConstraint);
+
+                return $schemaInfos[$matcher->numberOfInvocations() - 1];
+            });
 
         return $output;
     }
