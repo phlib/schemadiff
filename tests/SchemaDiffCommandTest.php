@@ -604,7 +604,7 @@ class SchemaDiffCommandTest extends TestCase
     ): array {
         $tableFilterConstraint = static::isInstanceOf(\Closure::class);
         if (is_array($tables)) {
-            $tableFilterConstraint = static::callback(function (\Closure $tableFilter) use ($tables) {
+            $tableFilterConstraint = static::callback(function (\Closure $tableFilter) use ($tables): bool {
                 foreach ($tables as $tableName) {
                     $tableFilter($tableName);
                 }
