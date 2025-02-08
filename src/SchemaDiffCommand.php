@@ -16,10 +16,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SchemaDiffCommand extends Command
 {
-    private SchemaInfoFactory $schemaInfoFactory;
-
-    private \Closure $schemaDiffFactory;
-
     private array $ignoreDatabases;
 
     private ?string $ignoreDatabasesRegex;
@@ -37,12 +33,9 @@ class SchemaDiffCommand extends Command
     private ?string $tablesRegex;
 
     public function __construct(
-        SchemaInfoFactory $schemaInfoFactory,
-        \Closure $schemaDiffFactory,
+        private readonly SchemaInfoFactory $schemaInfoFactory,
+        private readonly \Closure $schemaDiffFactory,
     ) {
-        $this->schemaInfoFactory = $schemaInfoFactory;
-        $this->schemaDiffFactory = $schemaDiffFactory;
-
         parent::__construct();
     }
 

@@ -12,12 +12,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SchemaDiff
 {
-    private OutputInterface $output;
-
-    public function __construct(OutputInterface $output)
-    {
-        $this->output = $output;
-
+    public function __construct(
+        private readonly OutputInterface $output,
+    ) {
         $this->initStyles();
     }
 
