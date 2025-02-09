@@ -6,12 +6,13 @@ namespace Phlib\SchemaDiff\Test\Integration;
 
 use Phlib\SchemaDiff\SchemaDiff;
 use Phlib\SchemaDiff\SchemaInfoFactory;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
  * @package phlib/schemadiff
- * @group integration
  */
+#[Group('integration')]
 class SchemaDiffTest extends SchemaDiffTestCase
 {
     protected function runDiff(string $tableName, string &$output = null): bool

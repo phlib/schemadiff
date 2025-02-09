@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Phlib\SchemaDiff\Test\Integration;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+
 /**
  * @package phlib/schemadiff
  */
@@ -25,7 +27,7 @@ abstract class SchemaDiffTestCase extends IntegrationTestCase
         static::assertEmpty($output);
     }
 
-    public function dataSchemaOrder(): array
+    public static function dataSchemaOrder(): array
     {
         return [
             'one-two' => [1, 2],
@@ -33,9 +35,7 @@ abstract class SchemaDiffTestCase extends IntegrationTestCase
         ];
     }
 
-    /**
-     * @dataProvider dataSchemaOrder
-     */
+    #[DataProvider('dataSchemaOrder')]
     public function testMissingTable(int $first, int $second): void
     {
         $tableName = $this->generateTableName();
@@ -51,9 +51,7 @@ abstract class SchemaDiffTestCase extends IntegrationTestCase
         static::assertStringStartsWith($expected, $output);
     }
 
-    /**
-     * @dataProvider dataSchemaOrder
-     */
+    #[DataProvider('dataSchemaOrder')]
     public function testMissingColumn(int $first, int $second): void
     {
         $tableName = $this->generateTableName();
@@ -70,9 +68,7 @@ abstract class SchemaDiffTestCase extends IntegrationTestCase
         static::assertStringContainsString($expected, $output);
     }
 
-    /**
-     * @dataProvider dataSchemaOrder
-     */
+    #[DataProvider('dataSchemaOrder')]
     public function testMissingIndex(int $first, int $second): void
     {
         $tableName = $this->generateTableName();
@@ -89,9 +85,7 @@ abstract class SchemaDiffTestCase extends IntegrationTestCase
         static::assertStringStartsWith($expected, $output);
     }
 
-    /**
-     * @dataProvider dataSchemaOrder
-     */
+    #[DataProvider('dataSchemaOrder')]
     public function testDiffColumnCharset(int $first, int $second): void
     {
         $tableName = $this->generateTableName();
@@ -110,9 +104,7 @@ abstract class SchemaDiffTestCase extends IntegrationTestCase
         static::assertStringContainsString(getenv('DB_DATABASE_' . $second) . "@{$second}=utf8mb4", $output);
     }
 
-    /**
-     * @dataProvider dataSchemaOrder
-     */
+    #[DataProvider('dataSchemaOrder')]
     public function testDiffTableCharset(int $first, int $second): void
     {
         $tableName = $this->generateTableName();

@@ -97,7 +97,7 @@ class SchemaInfoTest extends TestCase
     {
         static::assertSame(
             $this->tableData[$this->tableName]['TABLE_INFO'],
-            $this->schemaInfo->getTableInfo($this->tableName)
+            $this->schemaInfo->getTableInfo($this->tableName),
         );
     }
 
@@ -124,7 +124,7 @@ class SchemaInfoTest extends TestCase
     {
         static::assertSame(
             $this->tableData[$this->tableName]['INDEXES']['PRIMARY'],
-            $this->schemaInfo->getIndexInfo($this->tableName, 'PRIMARY')
+            $this->schemaInfo->getIndexInfo($this->tableName, 'PRIMARY'),
         );
     }
 
@@ -151,7 +151,7 @@ class SchemaInfoTest extends TestCase
     {
         static::assertSame(
             $this->tableData[$this->tableName]['COLUMNS']['test_id'],
-            $this->schemaInfo->getColumnInfo($this->tableName, 'test_id')
+            $this->schemaInfo->getColumnInfo($this->tableName, 'test_id'),
         );
     }
 }
